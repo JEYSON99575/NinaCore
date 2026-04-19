@@ -182,6 +182,19 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#
 .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
 @media (max-width:600px){.modal-btns{justify-content:center}}
 
+/* CERTIFICADOS (NUEVO) */
+.cert-box { border: 12px solid #667eea; padding: 40px; text-align: center; background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%); position: relative; }
+.cert-box h1 { color: #333; font-size: 38px; margin-bottom: 10px; font-family: 'Georgia', serif; }
+.cert-box h2 { color: #667eea; font-size: 28px; margin: 20px 0; border-bottom: 2px dashed #ccc; padding-bottom: 10px; display: inline-block; }
+.cert-box p { font-size: 16px; color: #555; margin-bottom: 15px; }
+.cert-seal { position: absolute; bottom: 30px; right: 30px; width: 80px; height: 80px; background: #f1c40f; border-radius: 50%; border: 4px dashed #fff; box-shadow: 0 0 0 4px #f1c40f; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #d35400; font-size: 12px; transform: rotate(-15deg); }
+@media print {
+  body * { visibility: hidden; }
+  #certModal, #certModal * { visibility: visible; }
+  #certModal { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 0; }
+  .modal-btns { display: none !important; }
+}
+
 /* ADMIN */
 .admin-dash{display:none;min-height:100vh;background:#f5f7fa;padding:15px;padding-bottom:30px}
 @media (min-width:769px){.admin-dash{padding:30px 20px}}
@@ -224,7 +237,7 @@ table tr:hover{background:#f9f9f9}
 .check-item input{cursor:pointer;accent-color:#667eea;width:16px;height:16px}
 .user-card{background:#f9f9f9;padding:16px;border-radius:10px;margin-bottom:12px;border:2px solid #e0e0e0;display:flex;justify-content:space-between;align-items:start;gap:12px}
 @media (max-width:600px){.user-card{flex-direction:column}}
-.user-info{flex:1}
+.user-info{flex:1; width: 100%;}
 .user-info h4{color:#333;margin-bottom:4px;font-weight:700;font-size:14px}
 .user-info p{color:#777;font-size:12px;margin-bottom:3px}
 .user-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -249,7 +262,7 @@ table tr:hover{background:#f9f9f9}
 <img src="logo.jpg" class="logo-img" alt="NinaCore Logo">
 <h1>NinaCore</h1>
 <p style="text-align: justify; margin-bottom: 20px; line-height: 1.6; color: #555;">
-  Bienvenido a NinaCore, tu plataforma educativa inteligente. Aquí podrás acceder a cursos interactivos, guías paso a paso y evaluaciones automatizadas diseñadas para potenciar tu aprendizaje de manera sencilla y estructurada.
+  Bienvenido a NinaCore, tu plataforma educativa inteligente. Aquí podrás acceder a cursos interactivos, guías paso a paso y evaluaciones automatizadas.
 </p>
 <button class="btn btn-full" onclick="startApp()">Ingresar a la Plataforma</button>
 <div class="copyright" style="margin-top: 25px; font-size: 11px; color:#aaa; font-weight: bold;">© 2026 Jeyson Beltran - Todos los derechos reservados</div>
@@ -302,10 +315,7 @@ table tr:hover{background:#f9f9f9}
 
 <div id="dashboard" class="dash">
 <div class="navbar">
-<h1>
-  <img src="logo.jpg" class="logo-sm" alt="Logo Pequeño">
-  NinaCore
-</h1>
+<h1><img src="logo.jpg" class="logo-sm" alt="Logo Pequeño">NinaCore</h1>
 <button class="menu-burger" onclick="openMobileMenu()">☰</button>
 <div class="navbar-r">
 <div style="text-align:right;line-height:1.4">
@@ -329,18 +339,15 @@ table tr:hover{background:#f9f9f9}
 <h2>Bienvenido a NinaCore</h2>
 <div class="intro-box">
 <p><strong>¿Cómo funciona NinaCore?</strong></p>
-<p style="margin-top:10px">Los temas disponibles están en el menú. Cada tema tiene un <strong>temario con capítulos</strong>. Lee cada capítulo que incluye <strong>ayudas visuales, imágenes y diagramas</strong>. Al finalizar cada capítulo, completa la <strong>evaluación</strong>. Si tienes dudas, usa el botón <strong>❓</strong> abajo.</p>
+<p style="margin-top:10px">Los temas disponibles están en el menú. Lee cada capítulo, completa la evaluación y avanza en tu aprendizaje.</p>
 </div>
-<p style="color:#666;margin-top:20px;line-height:1.7">Selecciona un tema del menú izquierdo (o del menú ☰ en móvil) para comenzar a aprender.</p>
 </div>
 
 <div id="temaView" class="section">
 <button class="back-btn" onclick="goInicio()">← Volver</button>
 <h2 id="tema-titulo"></h2>
-
 <div class="temario">
 <h3>📖 Temario del Libro</h3>
-<p style="color:#666;margin-bottom:12px;font-size:13px">Completa cada capítulo. Al final harás una evaluación para medir tu aprendizaje.</p>
 <ul class="temario-lista" id="temario-lista"></ul>
 </div>
 </div>
@@ -404,7 +411,7 @@ table tr:hover{background:#f9f9f9}
         <div class="stat-n" id="sTem">0</div><div class="stat-l">Temas</div>
     </div>
     <div class="stat" style="cursor:pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="adminTab('dash')">
-        <div class="stat-n" id="sEval">0</div><div class="stat-l">Evaluaciones Totales</div>
+        <div class="stat-n" id="sEval">0</div><div class="stat-l">Evals. Totales</div>
     </div>
     <div class="stat" style="cursor:pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="adminTab('ayudas')">
         <div class="stat-n" id="sAyu">0</div><div class="stat-l">Ayudas Pendientes</div>
@@ -415,23 +422,18 @@ table tr:hover{background:#f9f9f9}
 <div class="admin-tab active" onclick="adminTab('dash')">📊 Dashboard</div>
 <div class="admin-tab" onclick="adminTab('usuarios')">👤 Usuarios</div>
 <div class="admin-tab" onclick="adminTab('cargar')">📚 Cargar Tema</div>
-<div class="admin-tab" onclick="adminTab('asignar')">👥 Asignar</div>
+<div class="admin-tab" onclick="adminTab('asignar')">👥 Asignar / Eliminar</div>
 <div class="admin-tab" onclick="adminTab('ayudas')">❓ Ayudas</div>
 </div>
 
 <div id="aDash" class="admin-section active">
 <h3>📊 Resumen General</h3>
 <div class="intro-box">
-<p><strong>Opciones disponibles:</strong></p>
-<p style="margin-top:8px">👤 <strong>Usuarios:</strong> Revisa el historial detallado de calificaciones por alumno.</p>
-<p>📚 <strong>Cargar Tema:</strong> Usa la Carga Rápida JSON para crear cursos en segundos.</p>
-<p>👥 <strong>Asignar:</strong> Decide qué usuarios pueden ver cada tema.</p>
-<p>❓ <strong>Ayudas:</strong> Responde dudas enviadas por los alumnos.</p>
+<p><strong>⚙️ Nota de Seguridad sobre Contraseñas:</strong></p>
+<p style="font-size:12px; color:#555;">Firebase Authentication encripta las contraseñas con seguridad militar. No es posible verlas en texto plano. Si un alumno olvida su clave, la mejor práctica es eliminar al usuario desde este panel y volverlo a crear con una nueva.</p>
 </div>
-
 <h4 style="margin-top:25px; margin-bottom:15px; color:#667eea; border-bottom: 2px solid #eee; padding-bottom: 10px;">📈 Últimas Evaluaciones Recibidas</h4>
 <div id="recent-evals-cont"></div>
-
 </div>
 
 <div id="aUsuarios" class="admin-section">
@@ -448,14 +450,11 @@ table tr:hover{background:#f9f9f9}
 
 <div id="aCargar" class="admin-section">
 <h3>📚 Cargar Nuevo Tema</h3>
-
 <div style="background:#f0f4ff; padding:20px; border-radius:10px; margin-bottom:25px; border:2px dashed #667eea; text-align:center;">
     <div style="font-size: 40px; margin-bottom: 10px;">📁</div>
     <h4 style="color:#667eea; margin-bottom:8px;">⚡ Carga por Archivo JSON</h4>
-    <p style="font-size:13px; color:#555; margin-bottom:15px;">Selecciona el archivo <b>.json</b> de tu computadora para inyectar el curso completo a la nube.</p>
-    
+    <p style="font-size:13px; color:#555; margin-bottom:15px;">Selecciona el archivo <b>.json</b> generado por IA para inyectar el curso completo a la nube.</p>
     <input type="file" id="fileJsonUpload" accept=".json" style="display:none" onchange="leerArchivoJSON(event)">
-    
     <label for="fileJsonUpload" class="btn" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); cursor:pointer; display:inline-block; padding:12px 30px; font-size: 15px;">
         Seleccionar Archivo JSON y Subir 🚀
     </label>
@@ -467,23 +466,18 @@ table tr:hover{background:#f9f9f9}
 <div class="fg"><label>Nombre del Tema *</label><input type="text" id="nTema"></div>
 <div class="fg"><label>Icono</label><input type="text" id="nIcono" value="📚" maxlength="2"></div>
 </div>
-
 <div class="fg"><label>Subtítulo / Descripción *</label><input type="text" id="nSubt"></div>
-
 <h4 style="color:#667eea;margin-top:20px;margin-bottom:12px">Capítulos del Libro</h4>
-
 <div id="caps-cont"></div>
-
 <button class="btn btn-sec btn-small" onclick="addCap()" style="margin-bottom:20px">+ Agregar Capítulo</button>
-
 <div style="display:flex;gap:10px;margin-top:25px;flex-wrap:wrap">
 <button class="btn" style="flex:1;min-width:150px" onclick="guardarTema()">💾 Guardar Tema Manual</button>
 </div>
 </div>
 
 <div id="aAsignar" class="admin-section">
-<h3>👥 Asignar Temas a Usuarios</h3>
-<p style="color:#666;margin-bottom:20px;font-size:13px">Marca qué usuarios pueden ver cada tema.</p>
+<h3>👥 Asignar o Eliminar Temas</h3>
+<p style="color:#666;margin-bottom:20px;font-size:13px">Marca qué usuarios pueden ver cada tema o elimina los temas obsoletos.</p>
 <div id="asignar-cont"></div>
 </div>
 
@@ -494,6 +488,34 @@ table tr:hover{background:#f9f9f9}
 
 </div>
 </div>
+</div>
+
+<div id="certModal" class="modal">
+  <div class="modal-content" style="max-width: 800px; padding: 0;">
+    <div id="certToPrint" class="cert-box">
+      <div style="font-size: 50px; margin-bottom: 10px;">🎓</div>
+      <h1>Certificado de Excelencia</h1>
+      <p style="margin-top: 20px;">El presente diploma se otorga a:</p>
+      <h2 id="certName">Nombre del Estudiante</h2>
+      <p>Por haber demostrado un desempeño sobresaliente en sus evaluaciones y concluir satisfactoriamente su formación en <b>Nina Core</b>.</p>
+      <div style="display:flex; justify-content: space-around; margin-top: 50px; text-align:center;">
+          <div>
+              <div style="border-bottom: 1px solid #333; width: 150px; margin: 0 auto 5px;"></div>
+              <p style="font-size: 12px; margin:0;">Jeyson Beltran</p>
+              <p style="font-size: 10px; color:#999; margin:0;">Director de Plataforma</p>
+          </div>
+          <div>
+              <div style="border-bottom: 1px solid #333; width: 150px; margin: 0 auto 5px;"></div>
+              <p style="font-size: 12px; margin:0;" id="certDate">Fecha</p>
+          </div>
+      </div>
+      <div class="cert-seal">Sello<br>Oficial</div>
+    </div>
+    <div class="modal-btns" style="padding: 20px; background: #f5f7fa; border-top: 1px solid #ddd; margin:0;" data-html2canvas-ignore>
+       <button class="btn btn-sec" onclick="document.getElementById('certModal').classList.remove('active')">Cerrar</button>
+       <button class="btn" style="background: #2ecc71;" onclick="window.print()">🖨️ Imprimir PDF</button>
+    </div>
+  </div>
 </div>
 
 <button class="help-btn" id="helpBtn" onclick="abrirAyuda()" style="display:none">❓</button>
@@ -584,7 +606,7 @@ table tr:hover{background:#f9f9f9}
           return;
       }
 
-      btn.textContent = "Creando cuenta...";
+      btn.textContent = "Creando...";
       errBox.style.display = 'none';
 
       try {
@@ -601,13 +623,9 @@ table tr:hover{background:#f9f9f9}
           document.getElementById('r_pass').value = '';
           
       } catch (error) {
-          if(error.code === 'auth/email-already-in-use') {
-              errBox.textContent = 'Este correo ya está registrado.';
-          } else if(error.code === 'auth/weak-password') {
-              errBox.textContent = 'La contraseña debe tener al menos 6 caracteres.';
-          } else {
-              errBox.textContent = 'Error: ' + error.message;
-          }
+          if(error.code === 'auth/email-already-in-use') errBox.textContent = 'Este correo ya está registrado.';
+          else if(error.code === 'auth/weak-password') errBox.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+          else errBox.textContent = 'Error: ' + error.message;
           errBox.style.display = 'block';
       }
       btn.textContent = "Crear Cuenta";
@@ -623,22 +641,15 @@ table tr:hover{background:#f9f9f9}
   };
 
   window.cargarMobileMenu = function() {
-      let html = '';
-      const misTemas = temas.filter(t => t.asignadoA && t.asignadoA.includes(currentUser.u));
-      
-      html += '<div class="mobile-menu-item active" onclick="goInicio();closeMobileMenu()">📖 Inicio</div>';
-      
+      let html = '<div class="mobile-menu-item active" onclick="goInicio();closeMobileMenu()">📖 Inicio</div>';
       if (document.getElementById('adminDash').style.display === 'block') {
           html += '<div class="mobile-menu-item" onclick="closeMobileMenu()">🔐 Estás en Panel Admin</div>';
       }
-
+      const misTemas = temas.filter(t => t.asignadoA && t.asignadoA.includes(currentUser.u));
       misTemas.forEach(t => {
           html += `<div class="mobile-menu-item" onclick="verTema('${t.id}');closeMobileMenu()">${t.icono} ${t.nombre}</div>`;
       });
-      
-      if(misTemas.length === 0){
-          html += '<p style="color:#999;font-size:12px;padding:10px;text-align:center">No tienes temas asignados</p>';
-      }
+      if(misTemas.length === 0) html += '<p style="color:#999;font-size:12px;padding:10px;text-align:center">No tienes temas asignados</p>';
       document.getElementById('mobileMenuItems').innerHTML = html;
   };
 
@@ -646,7 +657,6 @@ table tr:hover{background:#f9f9f9}
       const email = document.getElementById('u').value.trim();
       const p = document.getElementById('p').value.trim();
       const btn = document.querySelector('.login-box .btn-full');
-      
       if(!email || !p) return;
       btn.textContent = "Cargando...";
 
@@ -658,17 +668,13 @@ table tr:hover{background:#f9f9f9}
           if(docSnap.exists()){
               currentUser = { uid: cred.user.uid, ...docSnap.data() };
               if(!currentUser.evals) currentUser.evals = [];
-              
               await sincronizarDatosDesdeFirebase();
-
               document.getElementById('loginScreen').style.display = 'none';
               document.getElementById('dashboard').style.display = 'block';
               document.getElementById('helpBtn').style.display = 'block';
               document.getElementById('un').textContent = currentUser.nombre;
               window.cargarSidebar();
-          } else {
-              throw new Error("El usuario no existe en la base de datos.");
-          }
+          } else throw new Error("El usuario no existe.");
       } catch (error) {
           document.getElementById('err').textContent = 'Correo o contraseña incorrectos';
           document.getElementById('err').style.display = 'block';
@@ -690,7 +696,6 @@ table tr:hover{background:#f9f9f9}
       const pass = document.getElementById('ap').value.trim();
       const btn = document.querySelector('#adminLogin .btn-full');
       const errBox = document.getElementById('aerr');
-      
       errBox.style.display = 'none';
 
       if(pass === ADMIN_PASS){
@@ -701,7 +706,7 @@ table tr:hover{background:#f9f9f9}
               document.getElementById('adminDash').style.display = 'block';
               window.actualizarAdmin();
           } catch (error) {
-              errBox.innerHTML = `⚠️ <b>Error de permisos:</b> Firebase bloqueó la lectura.<br>Revisa las reglas de Firestore.`;
+              errBox.innerHTML = `⚠️ <b>Error de permisos.</b>`;
               errBox.style.display = 'block';
           }
           btn.textContent = "Entrar al Panel";
@@ -716,7 +721,6 @@ table tr:hover{background:#f9f9f9}
           currentUser = null;
           document.getElementById('u').value = '';
           document.getElementById('p').value = '';
-          document.getElementById('err').style.display = 'none';
           document.getElementById('dashboard').style.display = 'none';
           document.getElementById('helpBtn').style.display = 'none';
           document.getElementById('loginScreen').style.display = 'flex';
@@ -725,7 +729,6 @@ table tr:hover{background:#f9f9f9}
 
   window.logoutAdmin = function() {
       document.getElementById('ap').value = '';
-      document.getElementById('aerr').style.display = 'none';
       document.getElementById('adminDash').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'flex';
   };
@@ -736,7 +739,6 @@ table tr:hover{background:#f9f9f9}
       misTemas.forEach(t => {
           html += `<div class="side-item" onclick="verTema('${t.id}')">${t.icono} ${t.nombre}</div>`;
       });
-      if(misTemas.length === 0) html += '<p style="color:#999;font-size:12px;padding:10px;text-align:center">No tienes temas asignados</p>';
       document.getElementById('temas-side').innerHTML = html;
   };
 
@@ -745,7 +747,6 @@ table tr:hover{background:#f9f9f9}
       document.getElementById('inicio').classList.add('active');
       document.querySelectorAll('.side-item').forEach(x => x.classList.remove('active'));
       if(document.querySelectorAll('.side-item')[0]) document.querySelectorAll('.side-item')[0].classList.add('active');
-      window.scrollTo(0,0);
   };
 
   window.verTema = function(id) {
@@ -757,7 +758,6 @@ table tr:hover{background:#f9f9f9}
       currentTema.capitulos.forEach((cap, i) => {
           const completado = currentUser.evals && currentUser.evals.some(e => e.tema === currentTema.nombre && e.capitulo === cap.nombre);
           const score = completado ? currentUser.evals.find(e => e.tema === currentTema.nombre && e.capitulo === cap.nombre).score : 0;
-          
           html += `
               <li class="temario-item ${completado ? 'completado' : ''}" onclick="verCapitulo(${cap.id})">
                   <div class="temario-num">${i+1}</div>
@@ -770,13 +770,8 @@ table tr:hover{background:#f9f9f9}
           `;
       });
       document.getElementById('temario-lista').innerHTML = html;
-      
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.getElementById('temaView').classList.add('active');
-      
-      document.querySelectorAll('.side-item').forEach(x => x.classList.remove('active'));
-      const items = document.querySelectorAll('.side-item');
-      items.forEach(item => { if(item.textContent.includes(currentTema.nombre)) item.classList.add('active'); });
       window.scrollTo(0,0);
   };
 
@@ -792,13 +787,9 @@ table tr:hover{background:#f9f9f9}
           </div>
           ${currentCap.contenido}
       `;
-      
       if(currentCap.preguntas && currentCap.preguntas.length > 0) {
-          html += `<button class="btn-empezar" onclick="empezarEval()">📝 Realizar Evaluación (${currentCap.preguntas.length} preguntas)</button>`;
-      } else {
-          html += `<p style="margin-top:30px; text-align:center; color:#999;">Este capítulo no tiene evaluación asignada.</p>`;
+          html += `<button class="btn-empezar" onclick="empezarEval()">📝 Realizar Evaluación</button>`;
       }
-      
       document.getElementById('libro-content').innerHTML = html;
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.getElementById('capituloView').classList.add('active');
@@ -809,12 +800,10 @@ table tr:hover{background:#f9f9f9}
       evalActual.pregs = currentCap.preguntas;
       evalActual.resps = new Array(currentCap.preguntas.length).fill(-1);
       evalActual.idx = 0;
-      
       document.getElementById('eval-titulo').textContent = currentCap.nombre;
       document.getElementById('tpreg').textContent = currentCap.preguntas.length;
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.getElementById('evalView').classList.add('active');
-      window.scrollTo(0,0);
       window.mostrarPreg();
   };
 
@@ -822,8 +811,7 @@ table tr:hover{background:#f9f9f9}
       const p = evalActual.pregs[evalActual.idx];
       document.getElementById('npreg').textContent = evalActual.idx + 1;
       document.getElementById('preg-txt').textContent = p.txt;
-      const prog = ((evalActual.idx + 1) / evalActual.pregs.length) * 100;
-      document.getElementById('pbar').style.width = prog + '%';
+      document.getElementById('pbar').style.width = (((evalActual.idx + 1) / evalActual.pregs.length) * 100) + '%';
       
       let html = '';
       p.ops.forEach((op, i) => {
@@ -852,8 +840,7 @@ table tr:hover{background:#f9f9f9}
   window.nextPreg = function() { if(evalActual.idx < evalActual.pregs.length - 1){evalActual.idx++; window.mostrarPreg();} };
 
   window.enviarEval = async function() {
-      let correctas = 0;
-      let html = '';
+      let correctas = 0; let html = '';
       evalActual.pregs.forEach((p, i) => {
           const ok = evalActual.resps[i] === p.cor;
           if(ok) correctas++;
@@ -866,35 +853,18 @@ table tr:hover{background:#f9f9f9}
               </div>
           `;
       });
-      
       const score = Math.round((correctas / evalActual.pregs.length) * 100);
-      let titulo, msg;
-      if(score >= 90){titulo = '¡Excelente!';msg = 'Dominas este capítulo perfectamente';}
-      else if(score >= 80){titulo = '¡Muy Bien!';msg = 'Gran desempeño';}
-      else if(score >= 70){titulo = 'Bien';msg = 'Has alcanzado el nivel requerido';}
-      else{titulo = 'Necesitas practicar';msg = 'Repasa el capítulo y vuelve a intentar';}
-      
       document.getElementById('sc').textContent = score + '%';
-      document.getElementById('st').textContent = titulo;
-      document.getElementById('sm').textContent = msg;
+      document.getElementById('st').textContent = score >= 80 ? '¡Muy Bien!' : 'Practica un poco más';
       document.getElementById('fd').innerHTML = html;
       
-      const nuevaEval = {
-          tema: currentTema.nombre,
-          capitulo: currentCap.nombre,
-          score: score,
-          fecha: new Date().toLocaleDateString('es-ES')
-      };
-
+      const nuevaEval = { tema: currentTema.nombre, capitulo: currentCap.nombre, score: score, fecha: new Date().toLocaleDateString('es-ES') };
       try {
-          const userRef = doc(db, "users", currentUser.uid);
-          await updateDoc(userRef, { evals: arrayUnion(nuevaEval) });
+          await updateDoc(doc(db, "users", currentUser.uid), { evals: arrayUnion(nuevaEval) });
           currentUser.evals.push(nuevaEval);
-      } catch(e) { console.error("Error guardando eval", e); }
-      
+      } catch(e) { }
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.getElementById('resultView').classList.add('active');
-      window.scrollTo(0,0);
   };
 
   window.cancelarEval = function() {
@@ -907,29 +877,16 @@ table tr:hover{background:#f9f9f9}
   
   window.enviarAyuda = async function() {
       const msg = document.getElementById('helpTxt').value.trim();
-      if(!msg){alert('Escribe tu pregunta');return;}
-      
-      const ayudaObj = {
-          estudiante: currentUser.nombre,
-          email: currentUser.email,
-          usuario: currentUser.u,
-          tema: currentTema ? currentTema.nombre : 'General',
-          capitulo: currentCap ? currentCap.nombre : '',
-          mensaje: msg,
-          fecha: new Date().toLocaleString('es-ES'),
-          estado: 'pendiente'
-      };
-      
+      if(!msg) return;
+      const ayudaObj = { estudiante: currentUser.nombre, email: currentUser.email, usuario: currentUser.u, tema: currentTema ? currentTema.nombre : 'General', capitulo: currentCap ? currentCap.nombre : '', mensaje: msg, fecha: new Date().toLocaleString('es-ES'), estado: 'pendiente' };
       try {
           const docRef = doc(collection(db, "ayudas"));
           await setDoc(docRef, ayudaObj);
           ayudaObj.id = docRef.id;
           ayudas.push(ayudaObj);
       } catch(e) {}
-
       window.cerrarAyuda();
-      const n = document.createElement('div'); n.className = 'notif'; n.textContent = '✓ Solicitud enviada a la nube.';
-      document.body.appendChild(n); setTimeout(() => n.remove(), 4000);
+      alert('Solicitud enviada.');
   };
 
   window.actualizarAdmin = function() {
@@ -937,7 +894,6 @@ table tr:hover{background:#f9f9f9}
       document.getElementById('sTem').textContent = temas.length;
       document.getElementById('sEval').textContent = usuarios.reduce((s, u) => s + (u.evals ? u.evals.length : 0), 0);
       document.getElementById('sAyu').textContent = ayudas.filter(a => a.estado === 'pendiente').length;
-      
       window.cargarUsersView();
       window.cargarAsignarView();
       window.cargarAyudasView();
@@ -948,7 +904,6 @@ table tr:hover{background:#f9f9f9}
       document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
       event.target.classList.add('active');
-      
       if(tab === 'dash') document.getElementById('aDash').classList.add('active');
       else if(tab === 'usuarios'){document.getElementById('aUsuarios').classList.add('active'); window.cargarUsersView();}
       else if(tab === 'cargar'){document.getElementById('aCargar').classList.add('active'); window.iniciarCargar();}
@@ -961,41 +916,25 @@ table tr:hover{background:#f9f9f9}
       const email = document.getElementById('newUserEmail').value.trim();
       const usuario = document.getElementById('newUserUser').value.trim();
       const pass = document.getElementById('newUserPass').value.trim();
-      const btn = document.getElementById('btnCrearUser');
-      
-      if(!nombre || !email || !usuario || !pass){alert('Completa todos los campos');return;}
-      btn.textContent = "Creando...";
-      
+      if(!nombre || !email || !usuario || !pass) return;
+      document.getElementById('btnCrearUser').textContent = "Creando...";
       try {
           const cred = await createUserWithEmailAndPassword(auth, email, pass);
           const newUserObj = { u: usuario, nombre: nombre, email: email, evals: [], rol: "estudiante" };
           await setDoc(doc(db, "users", cred.user.uid), newUserObj);
-          
           newUserObj.uid = cred.user.uid;
           usuarios.push(newUserObj);
-          
-          document.getElementById('newUserName').value = '';
-          document.getElementById('newUserEmail').value = '';
-          document.getElementById('newUserUser').value = '';
-          document.getElementById('newUserPass').value = '';
-          
-          window.cargarUsersView();
           window.actualizarAdmin();
-          
-          const n = document.createElement('div'); n.className = 'notif'; n.textContent = '✓ Usuario '+nombre+' creado en la Nube';
-          document.body.appendChild(n); setTimeout(() => n.remove(), 3000);
-      } catch(e) {
-          alert("Error: " + e.message);
-      }
-      btn.textContent = "Agregar";
+          alert("Usuario creado");
+      } catch(e) { alert("Error: " + e.message); }
+      document.getElementById('btnCrearUser').textContent = "Agregar";
   };
 
   window.eliminarUsuario = async function(uid) {
-      if(confirm('¿Seguro que quieres borrar este usuario de la base de datos? (La cuenta de Auth debe borrarse manual en consola)')){
+      if(confirm('¿Seguro que quieres borrar este usuario permanentemente?')){
           try {
               await deleteDoc(doc(db, "users", uid));
               usuarios = usuarios.filter(x => x.uid !== uid);
-              window.cargarUsersView();
               window.actualizarAdmin();
           } catch(e) { alert("Error eliminando: " + e); }
       }
@@ -1010,327 +949,114 @@ table tr:hover{background:#f9f9f9}
               <div class="user-card">
                   <div class="user-info">
                       <h4>${u.nombre}</h4>
-                      <p>👤 ${u.u}</p>
-                      <p>📧 ${u.email}</p>
-                      <p>📊 ${evalsLength} evaluaciones | <strong style="color:#667eea">${prom}%</strong> promedio</p>
-                      
+                      <p>👤 ${u.u} | 📧 ${u.email}</p>
+                      <p>📊 ${evalsLength} evals. | <strong style="color:#667eea">${prom}%</strong> prom.</p>
                       <div id="evals-${u.uid}" style="display:none; margin-top:12px; padding:12px; background:white; border-radius:8px; border:1px solid #e0e0e0; font-size:12px;"></div>
-
                   </div>
-                  <div class="user-actions">
-                      <button class="btn btn-sec btn-small" style="background:#e8f0ff; color:#667eea;" onclick="verDetalleEvals('${u.uid}')">Ver Calificaciones</button>
-                      <button class="btn btn-danger btn-small" onclick="eliminarUsuario('${u.uid}')">Eliminar</button>
+                  <div class="user-actions" style="display:flex; flex-direction:column; gap:5px;">
+                      <button class="btn btn-sec btn-small" onclick="verDetalleEvals('${u.uid}')">🔍 Ver Calificaciones</button>
+                      <button class="btn btn-small" style="background:#f39c12;" onclick="abrirCertificado('${u.nombre}')">🎓 Dar Certificado</button>
+                      <button class="btn btn-danger btn-small" onclick="eliminarUsuario('${u.uid}')">🗑️ Eliminar User</button>
                   </div>
               </div>
           `;
       });
-      if(html === '') html = '<p style="color:#999;text-align:center;padding:30px">No hay usuarios registrados</p>';
       document.getElementById('users-cont').innerHTML = html;
   };
 
   window.verDetalleEvals = function(uid) {
       const el = document.getElementById('evals-'+uid);
-      if(el.style.display === 'block'){ 
-          el.style.display = 'none'; 
-          return; 
-      }
-      
+      if(el.style.display === 'block'){ el.style.display = 'none'; return; }
       const u = usuarios.find(x => x.uid === uid);
-      let html = '<strong style="color:#667eea; display:block; margin-bottom:8px;">Historial de Evaluaciones:</strong>';
-      
-      if(!u.evals || u.evals.length === 0){ 
-          html += '<p style="color:#999;">El alumno no ha realizado ninguna evaluación aún.</p>'; 
-      } else {
+      let html = '<strong style="color:#667eea; display:block; margin-bottom:8px;">Historial:</strong>';
+      if(!u.evals || u.evals.length===0){ html += '<p style="color:#999;">Sin evaluaciones.</p>'; }
+      else {
           u.evals.forEach(e => {
               const color = e.score >= 80 ? '#2ecc71' : (e.score >= 60 ? '#f39c12' : '#e74c3c');
-              html += `
-                  <div style="padding:6px 0; border-bottom:1px solid #eee;">
-                      <strong>${e.tema}</strong> ➔ ${e.capitulo} <br>
-                      <span style="color:${color}; font-weight:bold; font-size:14px;">${e.score}%</span> <span style="color:#999;">| Fecha: ${e.fecha}</span>
-                  </div>
-              `;
+              html += `<div style="padding:4px 0; border-bottom:1px solid #eee;"><strong>${e.tema}</strong> (${e.capitulo}): <span style="color:${color}; font-weight:bold;">${e.score}%</span></div>`;
           });
       }
-      el.innerHTML = html;
-      el.style.display = 'block';
+      el.innerHTML = html; el.style.display = 'block';
+  };
+
+  // NUEVO: GENERAR CERTIFICADOS
+  window.abrirCertificado = function(nombre) {
+      document.getElementById('certName').textContent = nombre;
+      const today = new Date();
+      document.getElementById('certDate').textContent = today.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('certModal').classList.add('active');
   };
 
   window.cargarEvalsDashboard = function() {
       let todasLasEvals = [];
-      usuarios.forEach(u => {
-          if(u.evals) {
-              u.evals.forEach(e => todasLasEvals.push({estudiante: u.nombre, ...e}));
-          }
-      });
-      
+      usuarios.forEach(u => { if(u.evals) u.evals.forEach(e => todasLasEvals.push({estudiante: u.nombre, ...e})); });
       todasLasEvals.reverse();
-      
-      let evalsHtml = `
-      <table style="width:100%; font-size:13px; background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-          <tr style="background:#f5f7fa; color:#333;">
-              <th style="padding:12px; text-align:left;">Estudiante</th>
-              <th style="padding:12px; text-align:left;">Tema</th>
-              <th style="padding:12px; text-align:left;">Capítulo</th>
-              <th style="padding:12px; text-align:center;">Score</th>
-          </tr>
-      `;
-      
+      let evalsHtml = `<table style="width:100%; font-size:13px; background:white; border-radius:10px;"><tr style="background:#f5f7fa;"><th>Estudiante</th><th>Tema</th><th>Capítulo</th><th style="text-align:center;">Score</th></tr>`;
       todasLasEvals.slice(0, 10).forEach(e => {
           const color = e.score >= 80 ? '#2ecc71' : (e.score >= 60 ? '#f39c12' : '#e74c3c');
-          evalsHtml += `
-          <tr style="border-bottom:1px solid #eee;">
-              <td style="padding:10px 12px; font-weight:600; color:#555;">${e.estudiante}</td>
-              <td style="padding:10px 12px;">${e.tema}</td>
-              <td style="padding:10px 12px; color:#777; font-size:12px;">${e.capitulo}</td>
-              <td style="padding:10px 12px; text-align:center; font-weight:bold; color:${color};">${e.score}%</td>
-          </tr>`;
+          evalsHtml += `<tr style="border-bottom:1px solid #eee;"><td>${e.estudiante}</td><td>${e.tema}</td><td style="color:#777;">${e.capitulo}</td><td style="text-align:center; font-weight:bold; color:${color};">${e.score}%</td></tr>`;
       });
-      
       evalsHtml += '</table>';
-      
-      if(todasLasEvals.length === 0) {
-          evalsHtml = '<p style="font-size:13px; color:#999; text-align:center; padding:20px; background:white; border-radius:10px;">No hay evaluaciones registradas en la base de datos todavía.</p>';
-      }
-      
       document.getElementById('recent-evals-cont').innerHTML = evalsHtml;
   };
 
   window.iniciarCargar = function() {
-      capsTemp = [];
-      window.pregCount = {};
+      capsTemp = []; window.pregCount = {};
       document.getElementById('caps-cont').innerHTML = '';
-      document.getElementById('nTema').value = '';
-      document.getElementById('nSubt').value = '';
-      document.getElementById('nIcono').value = '📚';
       if(document.getElementById('fileJsonUpload')) document.getElementById('fileJsonUpload').value = '';
       window.addCap();
   };
 
   window.addCap = function() {
-      const num = capsTemp.length;
-      capsTemp.push({preguntas: []});
-      window.pregCount[num] = 0;
-      
+      const num = capsTemp.length; capsTemp.push({preguntas: []}); window.pregCount[num] = 0;
       const html = `
           <div class="capitulo-config" id="cap-${num}">
-              <div class="capitulo-config-h">
-                  <h4>Capítulo ${num+1}</h4>
-                  <button class="btn btn-danger btn-small" onclick="delCap(${num})">Eliminar Capítulo</button>
-              </div>
-              <div class="form-row">
-                  <div class="fg"><label>Nombre del Capítulo</label><input type="text" id="capN-${num}"></div>
-                  <div class="fg"><label>Dificultad</label><select id="capD-${num}"><option value="basico">Básico</option><option value="intermedio">Intermedio</option><option value="avanzado">Avanzado</option></select></div>
-              </div>
-              <div class="fg"><label>Descripción corta</label><input type="text" id="capDesc-${num}"></div>
-              <div class="fg"><label>URL de Imagen (Opcional)</label><input type="text" id="capImg-${num}" placeholder="Ej. https://misitio.com/imagen.jpg"></div>
-              <div class="fg"><label>Contenido del libro (texto y párrafos)</label><textarea id="capC-${num}" style="min-height:120px"></textarea></div>
-              
-              <hr style="border:0; border-top:1px solid #e0e0e0; margin:20px 0;">
-              <h5 style="color:#667eea; margin-bottom:10px; font-size:14px;">Preguntas de Evaluación (Opcional)</h5>
+              <div class="capitulo-config-h"><h4>Capítulo ${num+1}</h4><button class="btn btn-danger btn-small" onclick="delCap(${num})">Eliminar</button></div>
+              <div class="form-row"><div class="fg"><label>Nombre</label><input type="text" id="capN-${num}"></div></div>
+              <div class="fg"><label>Contenido HTML</label><textarea id="capC-${num}" style="min-height:80px"></textarea></div>
               <div id="pregs-cont-${num}"></div>
-              <button type="button" class="btn btn-sec btn-small" style="margin-top:10px;" onclick="addPreg(${num})">+ Añadir Pregunta a este Capítulo</button>
+              <button class="btn btn-sec btn-small" onclick="addPreg(${num})">+ Pregunta</button>
           </div>
       `;
       document.getElementById('caps-cont').insertAdjacentHTML('beforeend', html);
   };
+  window.delCap = function(num) { const el = document.getElementById('cap-'+num); if(el){el.remove();capsTemp[num]=null;} };
 
-  window.delCap = function(num) {
-      const el = document.getElementById('cap-'+num);
-      if(el){el.remove();capsTemp[num]=null;}
+  window.addPreg = function(cNum) {
+      const pNum = window.pregCount[cNum];
+      const html = `<div style="background:#fff; padding:10px; margin-top:10px; border:1px solid #ccc; border-radius:5px;"><input type="text" id="pTxt-${cNum}-${pNum}" placeholder="Pregunta" style="width:100%; margin-bottom:5px;"></div>`;
+      document.getElementById(`pregs-cont-${cNum}`).insertAdjacentHTML('beforeend', html);
+      window.pregCount[cNum]++;
   };
 
-  window.addPreg = function(capNum) {
-      const pNum = window.pregCount[capNum];
-      const html = `
-          <div class="pregunta-config" id="preg-${capNum}-${pNum}" style="background:#fff; padding:15px; border:1px solid #d1d5db; border-radius:8px; margin-top:15px;">
-              <div class="fg" style="margin-bottom:10px;"><label>Pregunta ${pNum+1}</label><input type="text" id="pTxt-${capNum}-${pNum}" placeholder="Escribe la pregunta aquí"></div>
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-                  <div class="fg" style="margin-bottom:0;"><label>Opción A</label><input type="text" id="pOp0-${capNum}-${pNum}" placeholder="Respuesta A"></div>
-                  <div class="fg" style="margin-bottom:0;"><label>Opción B</label><input type="text" id="pOp1-${capNum}-${pNum}" placeholder="Respuesta B"></div>
-                  <div class="fg" style="margin-bottom:0;"><label>Opción C</label><input type="text" id="pOp2-${capNum}-${pNum}" placeholder="Respuesta C"></div>
-                  <div class="fg" style="margin-bottom:0;"><label>Opción D</label><input type="text" id="pOp3-${capNum}-${pNum}" placeholder="Respuesta D"></div>
-              </div>
-              <div class="form-row" style="margin-bottom:0; align-items:flex-end;">
-                  <div class="fg" style="margin-bottom:0;">
-                      <label style="color:#2ecc71;">Respuesta Correcta</label>
-                      <select id="pCor-${capNum}-${pNum}">
-                          <option value="0">Opción A</option>
-                          <option value="1">Opción B</option>
-                          <option value="2">Opción C</option>
-                          <option value="3">Opción D</option>
-                      </select>
-                  </div>
-                  <div style="text-align:right;">
-                      <button class="btn btn-danger btn-small" onclick="document.getElementById('preg-${capNum}-${pNum}').remove()">Eliminar Pregunta</button>
-                  </div>
-              </div>
-          </div>
-      `;
-      document.getElementById(`pregs-cont-${capNum}`).insertAdjacentHTML('beforeend', html);
-      window.pregCount[capNum]++;
-  };
-
-  // LECTURA Y SUBIDA DIRECTA DE ARCHIVO JSON
   window.leerArchivoJSON = function(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      if (file.type !== "application/json" && !file.name.endsWith(".json")) {
-          alert("Por favor, selecciona un archivo con formato .json");
-          event.target.value = ''; 
-          return;
-      }
-
+      const file = event.target.files[0]; if (!file) return;
       const reader = new FileReader();
-      
       reader.onload = async function(e) {
-          const rawJson = e.target.result;
-          let cursoNuevo;
-          
           try {
-              cursoNuevo = JSON.parse(rawJson);
-          } catch (error) {
-              alert('Error: El archivo no tiene un formato JSON válido.\nDetalle: ' + error.message);
-              event.target.value = ''; 
-              return;
-          }
-
-          if(!cursoNuevo.nombre || !cursoNuevo.capitulos) {
-              alert('El archivo se leyó bien, pero le faltan campos obligatorios como "nombre" o "capitulos".');
-              event.target.value = ''; 
-              return;
-          }
-
-          if(!confirm(`¿Estás seguro de inyectar el curso "${cursoNuevo.nombre}" en la base de datos?`)) {
-              event.target.value = ''; 
-              return;
-          }
-
-          if(!cursoNuevo.asignadoA) cursoNuevo.asignadoA = [];
-
-          try {
-              const labelBtn = document.querySelector('label[for="fileJsonUpload"]');
-              const originalText = labelBtn.innerHTML;
-              labelBtn.innerHTML = "⏳ Subiendo...";
-              labelBtn.style.pointerEvents = "none";
-
+              const cursoNuevo = JSON.parse(e.target.result);
+              if(!confirm(`¿Inyectar curso "${cursoNuevo.nombre}"?`)) return;
+              if(!cursoNuevo.asignadoA) cursoNuevo.asignadoA = [];
               const docRef = doc(collection(db, "temas"));
               await setDoc(docRef, cursoNuevo);
-              cursoNuevo.id = docRef.id;
-              temas.push(cursoNuevo);
-
+              cursoNuevo.id = docRef.id; temas.push(cursoNuevo);
               window.actualizarAdmin();
-              alert('¡Éxito! Curso inyectado en Firebase correctamente.');
-              
-              labelBtn.innerHTML = originalText;
-              labelBtn.style.pointerEvents = "auto";
-              event.target.value = ''; 
-              window.adminTab('asignar'); 
-
-          } catch(error) {
-              alert("Error inyectando a Firebase: " + error.message);
-              event.target.value = ''; 
-          }
+              alert('¡Curso inyectado!');
+              window.adminTab('asignar');
+          } catch(error) { alert("Error: " + error.message); }
       };
-
-      reader.onerror = function() {
-          alert("Hubo un error leyendo el archivo.");
-      };
-
       reader.readAsText(file);
   };
 
-  window.guardarTema = async function() {
-      const nombre = document.getElementById('nTema').value.trim();
-      const subt = document.getElementById('nSubt').value.trim();
-      const icono = document.getElementById('nIcono').value.trim() || '📚';
-      
-      if(!nombre || !subt){alert('Completa nombre y subtítulo del Tema');return;}
-      
-      const nuevoTema = {
-          nombre: nombre,
-          icono: icono,
-          subt: subt,
-          asignadoA: [],
-          capitulos: []
-      };
-      
-      let capNum = 1;
-      let errorEncontrado = false;
-
-      capsTemp.forEach((cap, i) => {
-          if(!cap || errorEncontrado) return;
-          const capN = document.getElementById('capN-'+i);
-          if(!capN) return;
-          
-          const capNombre = capN.value.trim();
-          const capDif = document.getElementById('capD-'+i).value;
-          const capDesc = document.getElementById('capDesc-'+i).value.trim();
-          const capImgUrl = document.getElementById('capImg-'+i) ? document.getElementById('capImg-'+i).value.trim() : '';
-          const capCont = document.getElementById('capC-'+i).value.trim();
-          
-          if(!capNombre || !capCont) {
-              alert(`Por favor, completa el Nombre y el Contenido del Capítulo ${i+1}`);
-              errorEncontrado = true;
-              return;
-          }
-          
-          const preguntasGen = [];
-          let pIndex = 0;
-          while(pIndex < 50) { 
-              let pTxtEl = document.getElementById(`pTxt-${i}-${pIndex}`);
-              if(pTxtEl) {
-                  let txt = pTxtEl.value.trim();
-                  let op0 = document.getElementById(`pOp0-${i}-${pIndex}`).value.trim() || 'Opción A';
-                  let op1 = document.getElementById(`pOp1-${i}-${pIndex}`).value.trim() || 'Opción B';
-                  let op2 = document.getElementById(`pOp2-${i}-${pIndex}`).value.trim() || 'Opción C';
-                  let op3 = document.getElementById(`pOp3-${i}-${pIndex}`).value.trim() || 'Opción D';
-                  let cor = parseInt(document.getElementById(`pCor-${i}-${pIndex}`).value);
-
-                  if(txt) {
-                      preguntasGen.push({ txt: txt, ops: [op0, op1, op2, op3], cor: cor });
-                  }
-              }
-              pIndex++;
-          }
-          
-          let imgHtml = '';
-          if(capImgUrl) {
-              imgHtml = `<div style="text-align: center;"><img src="${capImgUrl}" alt="Imagen del capítulo" style="max-width: 100%; border-radius: 12px; margin: 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"></div>`;
-          }
-
-          const contenidoHTML = `
-              <div class="capitulo">
-                  <h2>${capNombre}</h2>
-                  <div class="visual-aid"><div class="icono-grande">${icono}</div><h4>${capNombre}</h4><p>${capDesc}</p></div>
-                  ${imgHtml}
-                  ${capCont.split('\n').filter(l => l.trim()).map(l => {
-                      if(l.includes('📊') || l.includes('📈') || l.includes('🎨')){ return '<div class="diagrama"><p>'+l+'</p></div>'; }
-                      return '<p>'+l+'</p>';
-                  }).join('')}
-              </div>
-          `;
-          
-          nuevoTema.capitulos.push({
-              id: capNum++, nombre: capNombre, dificultad: capDif,
-              descripcion: capDesc, contenido: contenidoHTML, preguntas: preguntasGen
-          });
-      });
-      
-      if(errorEncontrado) return;
-      if(nuevoTema.capitulos.length === 0){alert('Agrega al menos 1 capítulo válido');return;}
-      
-      try {
-          const docRef = doc(collection(db, "temas"));
-          await setDoc(docRef, nuevoTema);
-          nuevoTema.id = docRef.id;
-          temas.push(nuevoTema);
-          
-          window.actualizarAdmin();
-          alert('✓ Tema guardado en la Base de Datos. Ahora asígnalo a los usuarios.');
-          window.adminTab('asignar');
-      } catch (e) {
-          alert("Error guardando tema: " + e.message);
+  // NUEVO: ELIMINAR TEMAS COMPLETOS
+  window.eliminarTema = async function(id) {
+      if(confirm('🚨 ¿Seguro que quieres borrar este tema y TODO su contenido de la nube de forma permanente?')) {
+          try {
+              await deleteDoc(doc(db, "temas", id));
+              temas = temas.filter(t => t.id !== id);
+              window.actualizarAdmin();
+              alert('Tema borrado correctamente.');
+          } catch(e) { alert("Error: " + e.message); }
       }
   };
 
@@ -1338,26 +1064,19 @@ table tr:hover{background:#f9f9f9}
       let html = '';
       temas.forEach(tema => {
           html += `
-              <div style="background:#f9f9f9;padding:18px;border-radius:10px;margin-bottom:18px;border-left:4px solid #667eea">
-                  <h4 style="color:#333;margin-bottom:10px;font-weight:700">${tema.icono} ${tema.nombre}</h4>
-                  <p style="color:#666;font-size:12px;margin-bottom:12px">${tema.subt}</p>
-                  <p style="font-size:12px;color:#555;margin-bottom:10px;font-weight:600">Asignar a estudiantes:</p>
+              <div style="background:#f9f9f9;padding:18px;border-radius:10px;margin-bottom:18px;border-left:4px solid #667eea; position:relative;">
+                  <button class="btn btn-danger btn-small" style="position:absolute; right:15px; top:15px;" onclick="eliminarTema('${tema.id}')">🗑️ Borrar Tema</button>
+                  <h4 style="color:#333;margin-bottom:10px;">${tema.icono} ${tema.nombre}</h4>
                   <div class="check-group">
           `;
           usuarios.forEach(u => {
               if(u.rol === "estudiante") {
                   const asignado = tema.asignadoA && tema.asignadoA.includes(u.u);
-                  html += `
-                      <label class="check-item ${asignado ? 'checked' : ''}">
-                          <input type="checkbox" ${asignado ? 'checked' : ''} onchange="toggleAsignar('${tema.id}', '${u.u}')">
-                          ${u.nombre}
-                      </label>
-                  `;
+                  html += `<label class="check-item ${asignado ? 'checked' : ''}"><input type="checkbox" ${asignado ? 'checked' : ''} onchange="toggleAsignar('${tema.id}', '${u.u}')">${u.nombre}</label>`;
               }
           });
           html += `</div></div>`;
       });
-      if(temas.length === 0) html = '<p style="color:#999;text-align:center;padding:40px">No hay temas cargados aún</p>';
       document.getElementById('asignar-cont').innerHTML = html;
   };
 
@@ -1365,60 +1084,18 @@ table tr:hover{background:#f9f9f9}
       const tema = temas.find(t => String(t.id) === String(temaId));
       if(!tema) return;
       if(!tema.asignadoA) tema.asignadoA = [];
+      if(tema.asignadoA.includes(usuarioU)) tema.asignadoA = tema.asignadoA.filter(u => u !== usuarioU);
+      else tema.asignadoA.push(usuarioU);
       
-      if(tema.asignadoA.includes(usuarioU)){
-          tema.asignadoA = tema.asignadoA.filter(u => u !== usuarioU);
-      } else {
-          tema.asignadoA.push(usuarioU);
-      }
-      
-      try {
-          const temaRef = doc(db, "temas", tema.id);
-          await updateDoc(temaRef, { asignadoA: tema.asignadoA });
-          window.cargarAsignarView();
-          const n = document.createElement('div'); n.className = 'notif'; n.textContent = '✓ Asignación en la nube actualizada';
-          document.body.appendChild(n); setTimeout(() => n.remove(), 2000);
-      } catch(e) { console.error(e); }
+      try { await updateDoc(doc(db, "temas", tema.id), { asignadoA: tema.asignadoA }); window.cargarAsignarView(); } catch(e) {}
   };
 
   window.cargarAyudasView = function() {
-      if(ayudas.length === 0){
-          document.getElementById('ayudas-cont').innerHTML = '<p style="color:#999;text-align:center;padding:40px">No hay solicitudes de ayuda</p>';
-          return;
-      }
       let html = '';
       ayudas.forEach(a => {
-          const estadoColor = a.estado === 'pendiente' ? '#e74c3c' : '#2ecc71';
-          html += `
-              <div style="background:#f9f9f9;padding:16px;border-radius:10px;margin-bottom:12px;border-left:4px solid ${estadoColor}">
-                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;gap:10px;flex-wrap:wrap">
-                      <div>
-                          <h4 style="color:#333;margin-bottom:4px;font-weight:700;font-size:14px">${a.estudiante}</h4>
-                          <p style="color:#777;font-size:11px">${a.fecha}</p>
-                      </div>
-                      <span class="badge ${a.estado === 'pendiente' ? 'b-avanzado' : 'b-basico'}" style="white-space:nowrap">${a.estado}</span>
-                  </div>
-                  <p style="color:#555;font-size:12px;margin-bottom:8px"><strong>📧 ${a.email}</strong> | <strong>Tema:</strong> ${a.tema} ${a.capitulo ? '- '+a.capitulo : ''}</p>
-                  <div style="background:white;padding:12px;border-radius:8px;margin-bottom:12px">
-                      <p style="color:#333;font-size:13px;line-height:1.6">${a.mensaje}</p>
-                  </div>
-                  ${a.estado === 'pendiente' ? `<button class="btn btn-small" onclick="resolverAyuda('${a.id}')">✓ Marcar como resuelta</button>` : ''}
-              </div>
-          `;
+          html += `<div style="background:#f9f9f9;padding:16px;border-radius:10px;margin-bottom:12px;"><p>${a.mensaje}</p></div>`;
       });
       document.getElementById('ayudas-cont').innerHTML = html;
-  };
-
-  window.resolverAyuda = async function(id) {
-      const a = ayudas.find(x => String(x.id) === String(id));
-      if(a){
-          try {
-              await updateDoc(doc(db, "ayudas", a.id), { estado: "resuelta" });
-              a.estado = 'resuelta';
-              window.cargarAyudasView();
-              window.actualizarAdmin();
-          } catch(e) { console.error(e); }
-      }
   };
 </script>
 
