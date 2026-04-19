@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NinaCore - Plataforma Educativa</title>
+<style>
+/* Logo desde archivo local */
+.logo-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 10px 25px rgba(167, 139, 250, 0.3);
+  margin-bottom: 15px;
+  background-color: #f5f7fa; /* Fondo por si tarda en cargar */
+}
+.logo-sm {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 10px;
+  object-fit: cover;
+  background-color: #f5f7fa;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;color:#333}
+
+/* MENU HAMBURGUESA */
+.menu-burger{display:none;background:none;border:none;color:white;font-size:24px;cursor:pointer;padding:10px;z-index:1001}
+@media (max-width:768px){.menu-burger{display:block}}
+.mobile-menu{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000}
+.mobile-menu.active{display:flex}
+.mobile-menu-content{background:white;width:80%;max-width:300px;height:100%;padding:20px;overflow-y:auto;display:flex;flex-direction:column}
+.mobile-menu-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;padding-bottom:15px;border-bottom:2px solid #e0e0e0}
+.mobile-menu-header h3{color:#667eea;font-size:18px;font-weight:700}
+.mobile-menu-close{background:none;border:none;color:#667eea;font-size:28px;cursor:pointer;padding:0}
+.mobile-menu-item{padding:15px;color:#555;cursor:pointer;border-radius:10px;margin-bottom:8px;background:#f5f7fa;transition:all 0.3s;font-weight:500;font-size:14px}
+.mobile-menu-item:hover{background:#e8f0ff;color:#667eea;transform:translateX(8px)}
+.mobile-menu-item.active{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-weight:700}
+
+/* PANTALLAS (WELCOME, LOGIN, REGISTRO) */
+.login-screen{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.login-box{background:white;padding:40px 30px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,0.3);width:100%;max-width:420px;text-align:center}
+@media (max-width:600px){.login-box{padding:30px 20px}}
+.login-box h1{color:#667eea;font-size:36px;margin-bottom:8px;font-weight:700}
+.login-box p{color:#999;margin-bottom:25px;font-size:14px}
+.fg{margin-bottom:16px;text-align:left}
+.fg label{display:block;margin-bottom:6px;color:#333;font-weight:600;font-size:13px}
+.fg input,.fg select,.fg textarea{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:inherit}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.1)}
+.btn{padding:12px 25px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s;box-shadow:0 5px 15px rgba(102,126,234,0.25)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(102,126,234,0.35)}
+.btn:active{transform:translateY(0)}
+.btn-full{width:100%}
+.btn-sec{background:#ecf0f1;color:#333}
+.btn-sec:hover{background:#d5dbdb}
+.btn-danger{background:#e74c3c}
+.btn-danger:hover{background:#c0392b}
+.btn-small{padding:8px 15px;font-size:12px}
+.err{color:#e74c3c;margin-top:12px;display:none;font-size:13px; font-weight: 600;}
+.link{color:#667eea;cursor:pointer;font-weight:600;display:block;margin-top:18px;font-size:13px;text-decoration:none}
+
+/* DASHBOARD */
+.dash{display:none;min-height:100vh;background:#f5f7fa;padding:15px;padding-bottom:80px}
+@media (min-width:769px){.dash{padding:30px 20px;padding-bottom:30px}}
+.navbar{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:15px;border-radius:15px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 5px 20px rgba(102,126,234,0.25);color:white;flex-wrap:wrap}
+@media (max-width:600px){.navbar{padding:12px}}
+.navbar h1{font-size:24px;font-weight:700; display:flex; align-items:center;}
+@media (max-width:600px){.navbar h1{font-size:20px}}
+.navbar-r{display:flex;align-items:center;gap:12px;font-size:13px}
+.navbar-btn{padding:8px 16px;background:rgba(255,255,255,0.2);color:white;border:2px solid white;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;transition:all 0.3s}
+.navbar-btn:hover{background:white;color:#667eea}
+.container{max-width:1400px;margin:0 auto}
+.content{display:grid;grid-template-columns:260px 1fr;gap:20px}
+@media (max-width:768px){.content{grid-template-columns:1fr}.sidebar{display:none!important}}
+
+/* SIDEBAR */
+.sidebar{background:white;padding:20px;border-radius:15px;height:fit-content;box-shadow:0 5px 15px rgba(0,0,0,0.08);position:sticky;top:15px}
+.sidebar h3{color:#667eea;font-size:15px;margin-bottom:15px;font-weight:700;border-bottom:2px solid #e0e0e0;padding-bottom:10px}
+.side-item{padding:12px 14px;margin-bottom:8px;background:#f5f7fa;border-radius:10px;cursor:pointer;color:#555;transition:all 0.3s;border-left:4px solid transparent;font-weight:500;font-size:13px}
+.side-item:hover{background:#e8f0ff;color:#667eea;border-left-color:#667eea;transform:translateX(3px)}
+.side-item.active{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-weight:700;border-left-color:white}
+
+/* MAIN */
+.main{background:white;border-radius:15px;padding:25px;box-shadow:0 5px 15px rgba(0,0,0,0.08);min-height:600px}
+@media (max-width:600px){.main{padding:18px;border-radius:12px}}
+.section{display:none}
+.section.active{display:block;animation:fadeIn 0.3s ease-in}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.main h2{color:#667eea;font-size:24px;margin-bottom:20px}
+@media (max-width:600px){.main h2{font-size:20px}}
+
+/* TEMARIO */
+.temario{background:linear-gradient(135deg,#f5f7fa 0%,#fff 100%);padding:20px;border-radius:15px;border-left:5px solid #667eea;margin-bottom:20px}
+.temario h3{color:#667eea;font-size:18px;margin-bottom:15px}
+.temario-lista{list-style:none}
+.temario-item{padding:14px;background:white;margin-bottom:10px;border-radius:10px;cursor:pointer;border:2px solid #e0e0e0;transition:all 0.3s;display:flex;justify-content:space-between;align-items:center;gap:10px}
+@media (max-width:600px){.temario-item{padding:12px;flex-wrap:wrap}}
+.temario-item:hover{border-color:#667eea;transform:translateX(5px);box-shadow:0 5px 15px rgba(102,126,234,0.15)}
+.temario-item.completado{background:#d4edda;border-color:#2ecc71}
+.temario-num{background:#667eea;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:14px}
+.temario-item.completado .temario-num{background:#2ecc71}
+.temario-info{flex:1}
+.temario-nombre{font-weight:700;color:#333;font-size:14px;margin-bottom:3px}
+.temario-desc{font-size:12px;color:#777}
+.temario-estado{font-size:11px;color:#667eea;font-weight:700;white-space:nowrap}
+
+/* LIBRO */
+.libro{max-width:900px;line-height:1.8;color:#333}
+.libro-header{text-align:center;margin-bottom:30px;padding-bottom:20px;border-bottom:3px solid #667eea}
+.libro-header .icono{font-size:60px;margin-bottom:15px}
+@media (max-width:600px){.libro-header .icono{font-size:50px}}
+.libro-header h1{color:#667eea;font-size:32px;margin-bottom:8px;font-weight:700}
+@media (max-width:600px){.libro-header h1{font-size:24px}}
+.libro-header .subt{color:#999;font-size:14px;font-style:italic}
+.capitulo{margin-bottom:35px}
+.capitulo h2{color:#667eea;font-size:24px;margin-bottom:18px;font-weight:700;border-left:5px solid #667eea;padding-left:15px}
+@media (max-width:600px){.capitulo h2{font-size:20px}}
+.capitulo h3{color:#555;font-size:17px;margin-top:20px;margin-bottom:10px;font-weight:700}
+.capitulo p{font-size:14px;margin-bottom:12px;text-align:justify;line-height:1.8}
+.visual-aid{background:#f5f7fa;border:2px solid #e0e0e0;border-radius:10px;padding:20px;margin:20px 0;text-align:center}
+.visual-aid .icono-grande{font-size:60px;margin-bottom:10px}
+.visual-aid h4{color:#667eea;margin-bottom:8px;font-weight:700}
+.visual-aid p{font-size:13px;color:#666;margin:0}
+.lista{margin:15px 0 15px 20px;font-size:14px}
+.lista li{margin-bottom:8px;color:#555}
+.lista strong{color:#667eea}
+.destacada{background:linear-gradient(135deg,#f5f7fa 0%,#e8f0ff 100%);border-left:5px solid #667eea;padding:18px;border-radius:10px;margin:20px 0}
+.destacada strong{color:#667eea}
+.diagrama{background:white;border:2px solid #667eea;border-radius:10px;padding:20px;margin:20px 0;text-align:center}
+.diagrama .paso{display:inline-block;margin:10px 5px}
+.diagrama .paso div{background:#667eea;color:white;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;margin-bottom:8px}
+.btn-empezar{display:inline-block;margin-top:30px;padding:14px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 8px 20px rgba(102,126,234,0.3);transition:all 0.3s}
+.btn-empezar:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(102,126,234,0.4)}
+
+/* EVALUACIÓN */
+.eval-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:20px;border-radius:15px;margin-bottom:25px}
+.eval-header h2{margin-bottom:12px;font-size:20px}
+.progress-bar{width:100%;height:8px;background:rgba(255,255,255,0.3);border-radius:10px;overflow:hidden;margin-top:10px}
+.progress-fill{height:100%;background:#2ecc71;transition:width 0.3s}
+.preg-num{margin-top:10px;font-size:13px;opacity:0.9}
+.pregunta{margin-bottom:30px}
+.pregunta-txt{font-size:17px;color:#333;margin-bottom:20px;font-weight:700;line-height:1.5}
+@media (max-width:600px){.pregunta-txt{font-size:15px}}
+.opciones{display:flex;flex-direction:column;gap:10px}
+.opcion{padding:13px 16px;border:2px solid #e0e0e0;border-radius:10px;cursor:pointer;background:#f9f9f9;display:flex;align-items:center;gap:10px;transition:all 0.3s}
+.opcion:hover{border-color:#667eea;background:#f0f3ff}
+.opcion.sel{border-color:#667eea;background:#e8f0ff;font-weight:600}
+.opcion input{width:18px;height:18px;cursor:pointer;accent-color:#667eea}
+.opcion span{flex:1;font-size:13px;color:#555}
+.botones{display:flex;gap:10px;justify-content:flex-end;margin-top:30px;flex-wrap:wrap}
+@media (max-width:600px){.botones{justify-content:center}}
+
+/* RESULTADOS */
+.score{text-align:center;margin-bottom:30px}
+.score-circle{width:150px;height:150px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;color:white;margin:0 auto 20px;font-size:50px;font-weight:700;box-shadow:0 10px 30px rgba(102,126,234,0.3)}
+@media (max-width:600px){.score-circle{width:120px;height:120px;font-size:40px}}
+.score h2{color:#333;margin-bottom:10px;font-size:24px}
+.score p{color:#666;font-size:14px}
+.feedback{background:#f5f7fa;padding:20px;border-radius:15px}
+.feedback h3{color:#333;margin-bottom:15px;font-size:16px}
+.feed-item{background:white;padding:15px;margin-bottom:10px;border-radius:10px;border-left:4px solid #667eea}
+.feed-item.ok{border-left-color:#2ecc71;background:#f0fdf4}
+.feed-item.no{border-left-color:#e74c3c;background:#fef2f2}
+.feed-item strong{display:block;margin-bottom:6px;font-size:13px}
+.feed-item p{font-size:12px;color:#666;margin-bottom:4px}
+
+/* BOTÓN AYUDA */
+.help-btn{position:fixed;bottom:25px;right:25px;width:56px;height:56px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:50%;font-size:26px;cursor:pointer;box-shadow:0 8px 25px rgba(102,126,234,0.4);z-index:999;transition:all 0.3s}
+@media (max-width:600px){.help-btn{width:50px;height:50px;font-size:24px;bottom:20px;right:20px}}
+.help-btn:hover{transform:scale(1.1)}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:1000;justify-content:center;align-items:center;padding:20px;overflow-y:auto}
+.modal.active{display:flex}
+.modal-content{background:white;padding:30px;border-radius:20px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto}
+@media (max-width:600px){.modal-content{padding:20px;max-height:85vh}}
+.modal-content h3{color:#667eea;margin-bottom:12px;font-size:20px}
+.modal-content p{color:#666;margin-bottom:12px;font-size:13px;line-height:1.6}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+@media (max-width:600px){.modal-btns{justify-content:center}}
+
+/* ADMIN */
+.admin-dash{display:none;min-height:100vh;background:#f5f7fa;padding:15px;padding-bottom:30px}
+@media (min-width:769px){.admin-dash{padding:30px 20px}}
+.admin-tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;overflow-x:auto;padding-bottom:10px}
+@media (max-width:600px){.admin-tabs{gap:8px}}
+.admin-tab{padding:12px 20px;background:white;border:2px solid #e0e0e0;border-radius:10px;cursor:pointer;font-weight:600;color:#555;transition:all 0.3s;font-size:13px;white-space:nowrap}
+.admin-tab:hover{border-color:#667eea;color:#667eea}
+.admin-tab.active{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border-color:#667eea}
+.admin-section{background:white;padding:25px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.08);margin-bottom:20px;display:none}
+@media (max-width:600px){.admin-section{padding:18px}}
+.admin-section.active{display:block}
+.admin-section h3{color:#667eea;margin-bottom:20px;font-size:20px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-bottom:25px}
+.stat{background:linear-gradient(135deg,#f5f7fa 0%,#fff 100%);padding:20px;border-radius:15px;text-align:center;border-top:4px solid #667eea}
+.stat-n{font-size:32px;font-weight:700;color:#667eea;margin-bottom:6px}
+.stat-l{color:#999;font-size:12px}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-bottom:15px}
+table{width:100%;border-collapse:collapse;margin-top:15px;font-size:13px}
+@media (max-width:600px){table{font-size:12px}}
+table th,table td{padding:12px;text-align:left;border-bottom:1px solid #e0e0e0}
+table th{background:#f5f7fa;color:#333;font-weight:700}
+table tr:hover{background:#f9f9f9}
+.capitulo-config{background:#f9f9f9;padding:18px;border-radius:10px;margin-bottom:15px;border:2px solid #e0e0e0}
+.capitulo-config-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap}
+.capitulo-config-h h4{color:#333;font-size:14px;font-weight:700}
+.notif{position:fixed;bottom:90px;right:25px;background:#2ecc71;color:white;padding:13px 20px;border-radius:10px;z-index:998;animation:slide 0.3s;font-size:13px;font-weight:600}
+@media (max-width:600px){.notif{bottom:80px;right:15px;left:15px;text-align:center}}
+@keyframes slide{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.back-btn{padding:10px 18px;background:#ecf0f1;color:#333;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.3s;margin-bottom:18px}
+.back-btn:hover{background:#d5dbdb}
+.badge{display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;text-transform:uppercase;margin-left:8px}
+.b-basico{background:#d4edda;color:#155724}
+.b-intermedio{background:#fff3cd;color:#856404}
+.b-avanzado{background:#f8d7da;color:#721c24}
+.b-experto{background:#d1ecf1;color:#0c5460}
+.check-group{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.check-item{background:#f5f7fa;padding:10px 14px;border-radius:8px;border:2px solid #e0e0e0;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;transition:all 0.3s}
+.check-item:hover{border-color:#667eea;background:#e8f0ff}
+.check-item.checked{background:#e8f0ff;border-color:#667eea}
+.check-item input{cursor:pointer;accent-color:#667eea;width:16px;height:16px}
+.user-card{background:#f9f9f9;padding:16px;border-radius:10px;margin-bottom:12px;border:2px solid #e0e0e0;display:flex;justify-content:space-between;align-items:start;gap:12px}
+@media (max-width:600px){.user-card{flex-direction:column}}
+.user-info{flex:1}
+.user-info h4{color:#333;margin-bottom:4px;font-weight:700;font-size:14px}
+.user-info p{color:#777;font-size:12px;margin-bottom:3px}
+.user-actions{display:flex;gap:8px}
+.user-actions .btn{padding:6px 12px;font-size:12px}
+.intro-box{background:linear-gradient(135deg,#f5f7fa 0%,#e8f0ff 100%);border-left:5px solid #667eea;padding:18px;border-radius:10px;margin-bottom:20px;font-size:14px;line-height:1.7;color:#555}
+</style>
+</head>
+<body>
+
+<div id="mobileMenuOverlay" class="mobile-menu" onclick="if(event.target===this) closeMobileMenu()">
+<div class="mobile-menu-content">
+<div class="mobile-menu-header">
+<h3>Menú</h3>
+<button class="mobile-menu-close" onclick="closeMobileMenu()">×</button>
+</div>
+<div id="mobileMenuItems"></div>
+</div>
+</div>
+
+<div id="welcomeScreen" class="login-screen">
+<div class="login-box">
+<img src="logo.jpg" class="logo-img" alt="NinaCore Logo">
+<h1>NinaCore</h1>
+<p style="text-align: justify; margin-bottom: 20px; line-height: 1.6; color: #555;">
+  Bienvenido a NinaCore, tu plataforma educativa inteligente. Aquí podrás acceder a cursos interactivos, guías paso a paso y evaluaciones automatizadas diseñadas para potenciar tu aprendizaje de manera sencilla y estructurada.
+</p>
+<button class="btn btn-full" onclick="startApp()">Ingresar a la Plataforma</button>
+<div class="copyright" style="margin-top: 25px; font-size: 11px; color:#aaa; font-weight: bold;">© 2026 Jeyson Beltran - Todos los derechos reservados</div>
+</div>
+</div>
+
+<div id="loginScreen" class="login-screen" style="display:none">
+<div class="login-box">
+<img src="logo.jpg" class="logo-img" alt="NinaCore Logo">
+<h1>NinaCore</h1>
+<p>Plataforma Educativa Inteligente</p>
+<div class="fg"><label>Correo Electrónico</label><input type="email" id="u" placeholder="tu@correo.com"></div>
+<div class="fg"><label>Contraseña</label><input type="password" id="p" placeholder="******"></div>
+<button class="btn btn-full" onclick="login()">Iniciar Sesión</button>
+<div class="err" id="err"></div>
+<a class="link" onclick="goRegister()">📝 Crear cuenta nueva</a>
+<a class="link" onclick="goAdmin()" style="margin-top: 10px; color: #999;">🔐 Acceso Administrador</a>
+<div class="copyright" style="margin-top: 15px; font-size: 11px; color:#aaa; font-weight: bold;">© 2026 Jeyson Beltran - Todos los derechos reservados</div>
+</div>
+</div>
+
+<div id="registerScreen" class="login-screen" style="display:none">
+<div class="login-box">
+<img src="logo.jpg" class="logo-img" alt="NinaCore Logo">
+<h1>Regístrate</h1>
+<p>Crea tu cuenta de estudiante</p>
+<div class="fg"><label>Nombre Completo</label><input type="text" id="r_nombre" placeholder="Tu nombre"></div>
+<div class="fg"><label>Usuario (Alias)</label><input type="text" id="r_usuario" placeholder="ej. juan123"></div>
+<div class="fg"><label>Correo Electrónico</label><input type="email" id="r_email" placeholder="tu@correo.com"></div>
+<div class="fg"><label>Contraseña</label><input type="password" id="r_pass" placeholder="Mínimo 6 caracteres"></div>
+<button class="btn btn-full" id="btnRegister" onclick="registerStudent()">Crear Cuenta</button>
+<div class="err" id="rerr"></div>
+<a class="link" onclick="backToLoginFromReg()">← Ya tengo cuenta, iniciar sesión</a>
+<div class="copyright" style="margin-top: 15px; font-size: 11px; color:#aaa; font-weight: bold;">© 2026 Jeyson Beltran - Todos los derechos reservados</div>
+</div>
+</div>
+
+<div id="adminLogin" class="login-screen" style="display:none">
+<div class="login-box">
+<div class="logo">🔐</div>
+<h1>Panel Admin</h1>
+<p>Ingresa tu clave maestra para gestionar la plataforma</p>
+<div class="fg"><label>Contraseña Maestra</label><input type="password" id="ap" placeholder="******"></div>
+<button class="btn btn-full" onclick="adminLogin()">Entrar al Panel</button>
+<div class="err" id="aerr"></div>
+<a class="link" onclick="backToLogin()">← Volver al Login de Estudiante</a>
+<div class="copyright" style="margin-top: 15px; font-size: 11px; color:#aaa; font-weight: bold;">© 2026 Jeyson Beltran - Todos los derechos reservados</div>
+</div>
+</div>
+
+<div id="dashboard" class="dash">
+<div class="navbar">
+<h1>
+  <img src="logo.jpg" class="logo-sm" alt="Logo Pequeño">
+  NinaCore
+</h1>
+<button class="menu-burger" onclick="openMobileMenu()">☰</button>
+<div class="navbar-r">
+<div style="text-align:right;line-height:1.4">
+<div id="un" style="font-weight:700"></div>
+<div style="font-size:11px;opacity:0.9">Estudiante</div>
+<div class="copyright" style="font-size:10px;opacity:0.85;margin-top:4px">© 2026 Jeyson Beltran</div>
+</div>
+<button class="navbar-btn" onclick="logout()">Salir</button>
+</div>
+</div>
+
+<div class="container">
+<div class="content">
+<div class="sidebar">
+<h3>📚 Mis Temas</h3>
+<div id="temas-side"></div>
+</div>
+
+<div class="main">
+<div id="inicio" class="section active">
+<h2>Bienvenido a NinaCore</h2>
+<div class="intro-box">
+<p><strong>¿Cómo funciona NinaCore?</strong></p>
+<p style="margin-top:10px">Los temas disponibles están en el menú. Cada tema tiene un <strong>temario con capítulos</strong>. Lee cada capítulo que incluye <strong>ayudas visuales, imágenes y diagramas</strong>. Al finalizar cada capítulo, completa la <strong>evaluación</strong>. Si tienes dudas, usa el botón <strong>❓</strong> abajo.</p>
+</div>
+<p style="color:#666;margin-top:20px;line-height:1.7">Selecciona un tema del menú izquierdo (o del menú ☰ en móvil) para comenzar a aprender.</p>
+</div>
+
+<div id="temaView" class="section">
+<button class="back-btn" onclick="goInicio()">← Volver</button>
+<h2 id="tema-titulo"></h2>
+
+<div class="temario">
+<h3>📖 Temario del Libro</h3>
+<p style="color:#666;margin-bottom:12px;font-size:13px">Completa cada capítulo. Al final harás una evaluación para medir tu aprendizaje.</p>
+<ul class="temario-lista" id="temario-lista"></ul>
+</div>
+</div>
+
+<div id="capituloView" class="section">
+<button class="back-btn" onclick="volverTemario()">← Volver al Temario</button>
+<div class="libro" id="libro-content"></div>
+</div>
+
+<div id="evalView" class="section">
+<button class="back-btn" onclick="cancelarEval()">← Cancelar</button>
+<div class="eval-header">
+<h2 id="eval-titulo"></h2>
+<div class="progress-bar"><div class="progress-fill" id="pbar"></div></div>
+<div class="preg-num">Pregunta <span id="npreg">1</span> de <span id="tpreg">10</span></div>
+</div>
+<div class="pregunta">
+<div class="pregunta-txt" id="preg-txt"></div>
+<div class="opciones" id="ops-div"></div>
+</div>
+<div class="botones">
+<button class="btn btn-sec btn-small" id="btnPrev" onclick="prevPreg()">← Anterior</button>
+<button class="btn btn-small" id="btnNext" onclick="nextPreg()">Siguiente →</button>
+<button class="btn btn-small" id="btnEnv" style="display:none" onclick="enviarEval()">Enviar</button>
+</div>
+</div>
+
+<div id="resultView" class="section">
+<button class="back-btn" onclick="volverTemario()">← Volver al Temario</button>
+<div class="score">
+<div class="score-circle" id="sc"></div>
+<h2 id="st"></h2>
+<p id="sm"></p>
+</div>
+<div class="feedback">
+<h3>Detalle de respuestas:</h3>
+<div id="fd"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="adminDash" class="admin-dash">
+<div class="navbar">
+<h1>🔐 Panel Administrador</h1>
+<button class="menu-burger" onclick="openMobileMenu()">☰</button>
+<div style="display:flex;align-items:center;gap:12px">
+<div class="copyright" style="font-size:10px;opacity:0.85">© 2026 Jeyson Beltran</div>
+<button class="navbar-btn" onclick="logoutAdmin()">Salir</button>
+</div>
+</div>
+
+<div class="container">
+<div class="stats-grid">
+<div class="stat"><div class="stat-n" id="sEst">0</div><div class="stat-l">Estudiantes</div></div>
+<div class="stat"><div class="stat-n" id="sTem">0</div><div class="stat-l">Temas</div></div>
+<div class="stat"><div class="stat-n" id="sEval">0</div><div class="stat-l">Evaluaciones</div></div>
+<div class="stat"><div class="stat-n" id="sAyu">0</div><div class="stat-l">Ayudas Pendientes</div></div>
+</div>
+
+<div class="admin-tabs">
+<div class="admin-tab active" onclick="adminTab('dash')">📊 Dashboard</div>
+<div class="admin-tab" onclick="adminTab('usuarios')">👤 Usuarios</div>
+<div class="admin-tab" onclick="adminTab('cargar')">📚 Cargar Tema</div>
+<div class="admin-tab" onclick="adminTab('asignar')">👥 Asignar</div>
+<div class="admin-tab" onclick="adminTab('ayudas')">❓ Ayudas</div>
+</div>
+
+<div id="aDash" class="admin-section active">
+<h3>📊 Resumen General</h3>
+<div class="intro-box">
+<p><strong>Opciones disponibles:</strong></p>
+<p style="margin-top:8px">👤 <strong>Usuarios:</strong> Crear, editar o eliminar estudiantes con correo</p>
+<p>📚 <strong>Cargar Tema:</strong> Crear nuevos temas, agregar contenido, <strong>imágenes</strong> y <strong>diseñar preguntas reales de evaluación</strong>.</p>
+<p>👥 <strong>Asignar:</strong> Decidir qué usuarios pueden ver cada tema</p>
+<p>❓ <strong>Ayudas:</strong> Ver y responder solicitudes de ayuda de estudiantes</p>
+</div>
+</div>
+
+<div id="aUsuarios" class="admin-section">
+<h3>👤 Gestionar Estudiantes</h3>
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+<input type="text" id="newUserName" placeholder="Nombre completo" style="padding:10px;border:2px solid #e0e0e0;border-radius:8px;flex:1;min-width:150px;font-family:inherit">
+<input type="email" id="newUserEmail" placeholder="correo@email.com" style="padding:10px;border:2px solid #e0e0e0;border-radius:8px;flex:1;min-width:180px;font-family:inherit">
+<input type="text" id="newUserUser" placeholder="usuario_id" style="padding:10px;border:2px solid #e0e0e0;border-radius:8px;flex:0.8;min-width:120px;font-family:inherit">
+<input type="password" id="newUserPass" placeholder="contraseña" style="padding:10px;border:2px solid #e0e0e0;border-radius:8px;flex:0.8;min-width:120px;font-family:inherit">
+<button class="btn btn-small" id="btnCrearUser" onclick="crearUsuario()" style="padding:10px 20px">Agregar</button>
+</div>
+<div id="users-cont"></div>
+</div>
+
+<div id="aCargar" class="admin-section">
+<h3>📚 Cargar Nuevo Tema</h3>
+<p style="color:#666;margin-bottom:20px;font-size:13px">Crea un tema con capítulos, contenido visual y preguntas personalizadas para evaluar.</p>
+
+<div class="form-row">
+<div class="fg"><label>Nombre del Tema *</label><input type="text" id="nTema"></div>
+<div class="fg"><label>Icono</label><input type="text" id="nIcono" value="📚" maxlength="2"></div>
+</div>
+
+<div class="fg"><label>Subtítulo / Descripción *</label><input type="text" id="nSubt"></div>
+
+<h4 style="color:#667eea;margin-top:20px;margin-bottom:12px">Capítulos del Libro</h4>
+
+<div id="caps-cont"></div>
+
+<button class="btn btn-sec btn-small" onclick="addCap()" style="margin-bottom:20px">+ Agregar Capítulo</button>
+
+<div style="display:flex;gap:10px;margin-top:25px;flex-wrap:wrap">
+<button class="btn" style="flex:1;min-width:150px" onclick="guardarTema()">💾 Guardar Tema Completo</button>
+<button class="btn btn-sec" style="flex:1;min-width:150px" onclick="adminTab('dash')">Cancelar</button>
+</div>
+</div>
+
+<div id="aAsignar" class="admin-section">
+<h3>👥 Asignar Temas a Usuarios</h3>
+<p style="color:#666;margin-bottom:20px;font-size:13px">Marca qué usuarios pueden ver cada tema.</p>
+<div id="asignar-cont"></div>
+</div>
+
+<div id="aAyudas" class="admin-section">
+<h3>❓ Solicitudes de Ayuda</h3>
+<div id="ayudas-cont"></div>
+</div>
+
+</div>
+</div>
+</div>
+
+<button class="help-btn" id="helpBtn" onclick="abrirAyuda()" style="display:none">❓</button>
+
+<div id="helpModal" class="modal">
+<div class="modal-content">
+<h3>Solicitar Ayuda al Maestro</h3>
+<p>Describe tu duda con detalle. El maestro recibirá una alerta con tu pregunta.</p>
+<div class="fg"><label>Tu pregunta</label><textarea id="helpTxt" style="min-height:100px"></textarea></div>
+<div class="modal-btns">
+<button class="btn btn-sec btn-small" onclick="cerrarAyuda()">Cancelar</button>
+<button class="btn btn-small" onclick="enviarAyuda()">Enviar</button>
+</div>
+</div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, arrayUnion, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAk3aoERBSKMWyWjCOjhfBEd5XyCfVGOA",
+    authDomain: "ninacore-51299.firebaseapp.com",
+    projectId: "ninacore-51299",
+    storageBucket: "ninacore-51299.firebasestorage.app",
+    messagingSenderId: "205765546003",
+    appId: "1:205765546003:web:b53255d0179bb9532c6fe6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let usuarios = [];
+  let temas = [];
+  let ayudas = [];
+  
+  const ADMIN_PASS = 'yanetlove4'; 
+  
+  let currentUser = null;
+  let currentTema = null;
+  let currentCap = null;
+  let evalActual = {pregs:[],resps:[],idx:0};
+  let capsTemp = [];
+  window.pregCount = {}; // Para llevar la cuenta de preguntas dinámicas en el admin
+
+  async function sincronizarDatosDesdeFirebase() {
+      const usersSnap = await getDocs(collection(db, "users"));
+      usuarios = [];
+      usersSnap.forEach(d => usuarios.push({ uid: d.id, ...d.data() }));
+
+      const temasSnap = await getDocs(collection(db, "temas"));
+      temas = [];
+      temasSnap.forEach(d => temas.push({ id: d.id, ...d.data() }));
+
+      const ayudasSnap = await getDocs(collection(db, "ayudas"));
+      ayudas = [];
+      ayudasSnap.forEach(d => ayudas.push({ id: d.id, ...d.data() }));
+  }
+
+  window.startApp = function() {
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+  };
+
+  window.goRegister = function() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('registerScreen').style.display = 'flex';
+  };
+
+  window.backToLoginFromReg = function() {
+      document.getElementById('registerScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+  };
+
+  window.registerStudent = async function() {
+      const nombre = document.getElementById('r_nombre').value.trim();
+      const usuario = document.getElementById('r_usuario').value.trim();
+      const email = document.getElementById('r_email').value.trim();
+      const pass = document.getElementById('r_pass').value.trim();
+      const btn = document.getElementById('btnRegister');
+      const errBox = document.getElementById('rerr');
+
+      if(!nombre || !usuario || !email || !pass) {
+          errBox.textContent = 'Por favor completa todos los campos.';
+          errBox.style.display = 'block';
+          return;
+      }
+
+      btn.textContent = "Creando cuenta...";
+      errBox.style.display = 'none';
+
+      try {
+          const cred = await createUserWithEmailAndPassword(auth, email, pass);
+          const newUserObj = { u: usuario, nombre: nombre, email: email, evals: [], rol: "estudiante" };
+          await setDoc(doc(db, "users", cred.user.uid), newUserObj);
+          
+          alert("¡Cuenta creada con éxito! Ahora puedes iniciar sesión.");
+          window.backToLoginFromReg();
+          
+          document.getElementById('r_nombre').value = '';
+          document.getElementById('r_usuario').value = '';
+          document.getElementById('r_email').value = '';
+          document.getElementById('r_pass').value = '';
+          
+      } catch (error) {
+          if(error.code === 'auth/email-already-in-use') {
+              errBox.textContent = 'Este correo ya está registrado.';
+          } else if(error.code === 'auth/weak-password') {
+              errBox.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+          } else {
+              errBox.textContent = 'Error: ' + error.message;
+          }
+          errBox.style.display = 'block';
+      }
+      btn.textContent = "Crear Cuenta";
+  };
+
+  window.openMobileMenu = function() {
+      document.getElementById('mobileMenuOverlay').classList.add('active');
+      window.cargarMobileMenu();
+  };
+
+  window.closeMobileMenu = function() {
+      document.getElementById('mobileMenuOverlay').classList.remove('active');
+  };
+
+  window.cargarMobileMenu = function() {
+      let html = '';
+      const misTemas = temas.filter(t => t.asignadoA && t.asignadoA.includes(currentUser.u));
+      
+      html += '<div class="mobile-menu-item active" onclick="goInicio();closeMobileMenu()">📖 Inicio</div>';
+      
+      if (document.getElementById('adminDash').style.display === 'block') {
+          html += '<div class="mobile-menu-item" onclick="closeMobileMenu()">🔐 Estás en Panel Admin</div>';
+      }
+
+      misTemas.forEach(t => {
+          html += `<div class="mobile-menu-item" onclick="verTema('${t.id}');closeMobileMenu()">${t.icono} ${t.nombre}</div>`;
+      });
+      
+      if(misTemas.length === 0){
+          html += '<p style="color:#999;font-size:12px;padding:10px;text-align:center">No tienes temas asignados</p>';
+      }
+      document.getElementById('mobileMenuItems').innerHTML = html;
+  };
+
+  window.login = async function() {
+      const email = document.getElementById('u').value.trim();
+      const p = document.getElementById('p').value.trim();
+      const btn = document.querySelector('.login-box .btn-full');
+      
+      if(!email || !p) return;
+      btn.textContent = "Cargando...";
+
+      try {
+          const cred = await signInWithEmailAndPassword(auth, email, p);
+          const docRef = doc(db, "users", cred.user.uid);
+          const docSnap = await getDoc(docRef);
+          
+          if(docSnap.exists()){
+              currentUser = { uid: cred.user.uid, ...docSnap.data() };
+              if(!currentUser.evals) currentUser.evals = [];
+              
+              await sincronizarDatosDesdeFirebase();
+
+              document.getElementById('loginScreen').style.display = 'none';
+              document.getElementById('dashboard').style.display = 'block';
+              document.getElementById('helpBtn').style.display = 'block';
+              document.getElementById('un').textContent = currentUser.nombre;
+              window.cargarSidebar();
+          } else {
+              throw new Error("El usuario no existe en la base de datos.");
+          }
+      } catch (error) {
+          document.getElementById('err').textContent = 'Correo o contraseña incorrectos';
+          document.getElementById('err').style.display = 'block';
+      }
+      btn.textContent = "Iniciar Sesión";
+  };
+
+  window.goAdmin = function() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminLogin').style.display = 'flex';
+  };
+
+  window.backToLogin = function() {
+      document.getElementById('adminLogin').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+  };
+
+  window.adminLogin = async function() {
+      const pass = document.getElementById('ap').value.trim();
+      const btn = document.querySelector('#adminLogin .btn-full');
+      const errBox = document.getElementById('aerr');
+      
+      errBox.style.display = 'none';
+
+      if(pass === ADMIN_PASS){
+          btn.textContent = "Sincronizando Nube...";
+          try {
+              await sincronizarDatosDesdeFirebase();
+              document.getElementById('adminLogin').style.display = 'none';
+              document.getElementById('adminDash').style.display = 'block';
+              window.actualizarAdmin();
+          } catch (error) {
+              errBox.innerHTML = `⚠️ <b>Error de permisos:</b> Firebase bloqueó la lectura.<br>Revisa las reglas de Firestore.`;
+              errBox.style.display = 'block';
+          }
+          btn.textContent = "Entrar al Panel";
+      } else {
+          errBox.textContent = 'Contraseña incorrecta';
+          errBox.style.display = 'block';
+      }
+  };
+
+  window.logout = function() {
+      signOut(auth).then(() => {
+          currentUser = null;
+          document.getElementById('u').value = '';
+          document.getElementById('p').value = '';
+          document.getElementById('err').style.display = 'none';
+          document.getElementById('dashboard').style.display = 'none';
+          document.getElementById('helpBtn').style.display = 'none';
+          document.getElementById('loginScreen').style.display = 'flex';
+      });
+  };
+
+  window.logoutAdmin = function() {
+      document.getElementById('ap').value = '';
+      document.getElementById('aerr').style.display = 'none';
+      document.getElementById('adminDash').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+  };
+
+  window.cargarSidebar = function() {
+      let html = '<div class="side-item active" onclick="goInicio()">📖 Inicio</div>';
+      const misTemas = temas.filter(t => t.asignadoA && t.asignadoA.includes(currentUser.u));
+      misTemas.forEach(t => {
+          html += `<div class="side-item" onclick="verTema('${t.id}')">${t.icono} ${t.nombre}</div>`;
+      });
+      if(misTemas.length === 0) html += '<p style="color:#999;font-size:12px;padding:10px;text-align:center">No tienes temas asignados</p>';
+      document.getElementById('temas-side').innerHTML = html;
+  };
+
+  window.goInicio = function() {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('inicio').classList.add('active');
+      document.querySelectorAll('.side-item').forEach(x => x.classList.remove('active'));
+      if(document.querySelectorAll('.side-item')[0]) document.querySelectorAll('.side-item')[0].classList.add('active');
+      window.scrollTo(0,0);
+  };
+
+  window.verTema = function(id) {
+      currentTema = temas.find(t => String(t.id) === String(id));
+      if(!currentTema) return;
+      document.getElementById('tema-titulo').textContent = currentTema.icono + ' ' + currentTema.nombre;
+      
+      let html = '';
+      currentTema.capitulos.forEach((cap, i) => {
+          const completado = currentUser.evals && currentUser.evals.some(e => e.tema === currentTema.nombre && e.capitulo === cap.nombre);
+          const score = completado ? currentUser.evals.find(e => e.tema === currentTema.nombre && e.capitulo === cap.nombre).score : 0;
+          
+          html += `
+              <li class="temario-item ${completado ? 'completado' : ''}" onclick="verCapitulo(${cap.id})">
+                  <div class="temario-num">${i+1}</div>
+                  <div class="temario-info">
+                      <div class="temario-nombre">${cap.nombre}</div>
+                      <div class="temario-desc">${cap.descripcion} <span class="badge b-${cap.dificultad}">${cap.dificultad}</span></div>
+                  </div>
+                  <div class="temario-estado">${completado ? '✓ '+score+'%' : 'Pendiente'}</div>
+              </li>
+          `;
+      });
+      document.getElementById('temario-lista').innerHTML = html;
+      
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('temaView').classList.add('active');
+      
+      document.querySelectorAll('.side-item').forEach(x => x.classList.remove('active'));
+      const items = document.querySelectorAll('.side-item');
+      items.forEach(item => { if(item.textContent.includes(currentTema.nombre)) item.classList.add('active'); });
+      window.scrollTo(0,0);
+  };
+
+  window.volverTemario = function() { window.verTema(currentTema.id); };
+
+  window.verCapitulo = function(capId) {
+      currentCap = currentTema.capitulos.find(c => String(c.id) === String(capId));
+      let html = `
+          <div class="libro-header">
+              <div class="icono">${currentTema.icono}</div>
+              <h1>${currentTema.nombre}</h1>
+              <div class="subt">${currentTema.subt}</div>
+          </div>
+          ${currentCap.contenido}
+      `;
+      
+      if(currentCap.preguntas && currentCap.preguntas.length > 0) {
+          html += `<button class="btn-empezar" onclick="empezarEval()">📝 Realizar Evaluación (${currentCap.preguntas.length} preguntas)</button>`;
+      } else {
+          html += `<p style="margin-top:30px; text-align:center; color:#999;">Este capítulo no tiene evaluación asignada.</p>`;
+      }
+      
+      document.getElementById('libro-content').innerHTML = html;
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('capituloView').classList.add('active');
+      window.scrollTo(0,0);
+  };
+
+  window.empezarEval = function() {
+      evalActual.pregs = currentCap.preguntas;
+      evalActual.resps = new Array(currentCap.preguntas.length).fill(-1);
+      evalActual.idx = 0;
+      
+      document.getElementById('eval-titulo').textContent = currentCap.nombre;
+      document.getElementById('tpreg').textContent = currentCap.preguntas.length;
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('evalView').classList.add('active');
+      window.scrollTo(0,0);
+      window.mostrarPreg();
+  };
+
+  window.mostrarPreg = function() {
+      const p = evalActual.pregs[evalActual.idx];
+      document.getElementById('npreg').textContent = evalActual.idx + 1;
+      document.getElementById('preg-txt').textContent = p.txt;
+      const prog = ((evalActual.idx + 1) / evalActual.pregs.length) * 100;
+      document.getElementById('pbar').style.width = prog + '%';
+      
+      let html = '';
+      p.ops.forEach((op, i) => {
+          const sel = evalActual.resps[evalActual.idx] === i;
+          html += `
+              <label class="opcion ${sel ? 'sel' : ''}">
+                  <input type="radio" name="opt" value="${i}" ${sel ? 'checked' : ''} onchange="marcar(${i})">
+                  <span>${op}</span>
+              </label>
+          `;
+      });
+      document.getElementById('ops-div').innerHTML = html;
+      document.getElementById('btnPrev').disabled = evalActual.idx === 0;
+      document.getElementById('btnNext').style.display = evalActual.idx === evalActual.pregs.length - 1 ? 'none' : 'block';
+      document.getElementById('btnEnv').style.display = evalActual.idx === evalActual.pregs.length - 1 ? 'block' : 'none';
+  };
+
+  window.marcar = function(i) {
+      evalActual.resps[evalActual.idx] = i;
+      document.querySelectorAll('.opcion').forEach((op, idx) => {
+          if(idx === i) op.classList.add('sel'); else op.classList.remove('sel');
+      });
+  };
+
+  window.prevPreg = function() { if(evalActual.idx > 0){evalActual.idx--; window.mostrarPreg();} };
+  window.nextPreg = function() { if(evalActual.idx < evalActual.pregs.length - 1){evalActual.idx++; window.mostrarPreg();} };
+
+  window.enviarEval = async function() {
+      let correctas = 0;
+      let html = '';
+      evalActual.pregs.forEach((p, i) => {
+          const ok = evalActual.resps[i] === p.cor;
+          if(ok) correctas++;
+          const resp = evalActual.resps[i] >= 0 ? p.ops[evalActual.resps[i]] : 'Sin responder';
+          html += `
+              <div class="feed-item ${ok ? 'ok' : 'no'}">
+                  <strong>${ok ? '✓' : '✗'} Pregunta ${i+1}: ${p.txt}</strong>
+                  <p><strong>Tu respuesta:</strong> ${resp}</p>
+                  ${!ok ? `<p><strong>Correcta:</strong> ${p.ops[p.cor]}</p>` : ''}
+              </div>
+          `;
+      });
+      
+      const score = Math.round((correctas / evalActual.pregs.length) * 100);
+      let titulo, msg;
+      if(score >= 90){titulo = '¡Excelente!';msg = 'Dominas este capítulo perfectamente';}
+      else if(score >= 80){titulo = '¡Muy Bien!';msg = 'Gran desempeño';}
+      else if(score >= 70){titulo = 'Bien';msg = 'Has alcanzado el nivel requerido';}
+      else{titulo = 'Necesitas practicar';msg = 'Repasa el capítulo y vuelve a intentar';}
+      
+      document.getElementById('sc').textContent = score + '%';
+      document.getElementById('st').textContent = titulo;
+      document.getElementById('sm').textContent = msg;
+      document.getElementById('fd').innerHTML = html;
+      
+      const nuevaEval = {
+          tema: currentTema.nombre,
+          capitulo: currentCap.nombre,
+          score: score,
+          fecha: new Date().toLocaleDateString('es-ES')
+      };
+
+      try {
+          const userRef = doc(db, "users", currentUser.uid);
+          await updateDoc(userRef, { evals: arrayUnion(nuevaEval) });
+          currentUser.evals.push(nuevaEval);
+      } catch(e) { console.error("Error guardando eval", e); }
+      
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('resultView').classList.add('active');
+      window.scrollTo(0,0);
+  };
+
+  window.cancelarEval = function() {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('capituloView').classList.add('active');
+  };
+
+  window.abrirAyuda = function() { document.getElementById('helpModal').classList.add('active'); };
+  window.cerrarAyuda = function() { document.getElementById('helpModal').classList.remove('active'); document.getElementById('helpTxt').value = ''; };
+  
+  window.enviarAyuda = async function() {
+      const msg = document.getElementById('helpTxt').value.trim();
+      if(!msg){alert('Escribe tu pregunta');return;}
+      
+      const ayudaObj = {
+          estudiante: currentUser.nombre,
+          email: currentUser.email,
+          usuario: currentUser.u,
+          tema: currentTema ? currentTema.nombre : 'General',
+          capitulo: currentCap ? currentCap.nombre : '',
+          mensaje: msg,
+          fecha: new Date().toLocaleString('es-ES'),
+          estado: 'pendiente'
+      };
+      
+      try {
+          const docRef = doc(collection(db, "ayudas"));
+          await setDoc(docRef, ayudaObj);
+          ayudaObj.id = docRef.id;
+          ayudas.push(ayudaObj);
+      } catch(e) {}
+
+      window.cerrarAyuda();
+      const n = document.createElement('div'); n.className = 'notif'; n.textContent = '✓ Solicitud enviada a la nube.';
+      document.body.appendChild(n); setTimeout(() => n.remove(), 4000);
+  };
+
+  window.actualizarAdmin = function() {
+      document.getElementById('sEst').textContent = usuarios.length;
+      document.getElementById('sTem').textContent = temas.length;
+      document.getElementById('sEval').textContent = usuarios.reduce((s, u) => s + (u.evals ? u.evals.length : 0), 0);
+      document.getElementById('sAyu').textContent = ayudas.filter(a => a.estado === 'pendiente').length;
+      
+      window.cargarUsersView();
+      window.cargarAsignarView();
+      window.cargarAyudasView();
+  };
+
+  window.adminTab = function(tab) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      if(tab === 'dash') document.getElementById('aDash').classList.add('active');
+      else if(tab === 'usuarios'){document.getElementById('aUsuarios').classList.add('active'); window.cargarUsersView();}
+      else if(tab === 'cargar'){document.getElementById('aCargar').classList.add('active'); window.iniciarCargar();}
+      else if(tab === 'asignar'){document.getElementById('aAsignar').classList.add('active'); window.cargarAsignarView();}
+      else if(tab === 'ayudas'){document.getElementById('aAyudas').classList.add('active'); window.cargarAyudasView();}
+  };
+
+  window.crearUsuario = async function() {
+      const nombre = document.getElementById('newUserName').value.trim();
+      const email = document.getElementById('newUserEmail').value.trim();
+      const usuario = document.getElementById('newUserUser').value.trim();
+      const pass = document.getElementById('newUserPass').value.trim();
+      const btn = document.getElementById('btnCrearUser');
+      
+      if(!nombre || !email || !usuario || !pass){alert('Completa todos los campos');return;}
+      btn.textContent = "Creando...";
+      
+      try {
+          const cred = await createUserWithEmailAndPassword(auth, email, pass);
+          const newUserObj = { u: usuario, nombre: nombre, email: email, evals: [], rol: "estudiante" };
+          await setDoc(doc(db, "users", cred.user.uid), newUserObj);
+          
+          newUserObj.uid = cred.user.uid;
+          usuarios.push(newUserObj);
+          
+          document.getElementById('newUserName').value = '';
+          document.getElementById('newUserEmail').value = '';
+          document.getElementById('newUserUser').value = '';
+          document.getElementById('newUserPass').value = '';
+          
+          window.cargarUsersView();
+          window.actualizarAdmin();
+          
+          const n = document.createElement('div'); n.className = 'notif'; n.textContent = '✓ Usuario '+nombre+' creado en la Nube';
+          document.body.appendChild(n); setTimeout(() => n.remove(), 3000);
+      } catch(e) {
+          alert("Error: " + e.message);
+      }
+      btn.textContent = "Agregar";
+  };
+
+  window.eliminarUsuario = async function(uid) {
+      if(confirm('¿Seguro que quieres borrar este usuario de la base de datos? (La cuenta de Auth debe borrarse manual en consola)')){
+          try {
+              await deleteDoc(doc(db, "users", uid));
+              usuarios = usuarios.filter(x => x.uid !== uid);
+              window.cargarUsersView();
+              window.actualizarAdmin();
+          } catch(e) { alert("Error eliminando: " + e); }
+      }
+  };
+
+  window.cargarUsersView = function() {
+      let html = '';
+      usuarios.forEach(u => {
+          const evalsLength = u.evals ? u.evals.length : 0;
+          const prom = evalsLength > 0 ? Math.round(u.evals.reduce((s, e) => s + e.score, 0) / evalsLength) : '-';
+          html += `
+              <div class="user-card">
+                  <div class="user-info">
+                      <h4>${u.nombre}</h4>
+                      <p>👤 ${u.u}</p>
+                      <p>📧 ${u.email}</p>
+                      <p>📊 ${evalsLength} evaluaciones | <strong style="color:#667eea">${prom}%</strong> promedio</p>
+                  </div>
+                  <div class="user-actions">
+                      <button class="btn btn-danger btn-small" onclick="eliminarUsuario('${u.uid}')">Eliminar</button>
+                  </div>
+              </div>
+          `;
+      });
+      if(html === '') html = '<p style="color:#999;text-align:center;padding:30px">No hay usuarios registrados</p>';
+      document.getElementById('users-cont').innerHTML = html;
+  };
+
+  window.iniciarCargar = function() {
+      capsTemp = [];
+      window.pregCount = {};
+      document.getElementById('caps-cont').innerHTML = '';
+      document.getElementById('nTema').value = '';
+      document.getElementById('nSubt').value = '';
+      document.getElementById('nIcono').value = '📚';
+      window.addCap();
+  };
+
+  window.addCap = function() {
+      const num = capsTemp.length;
+      capsTemp.push({preguntas: []});
+      window.pregCount[num] = 0;
+      
+      const html = `
+          <div class="capitulo-config" id="cap-${num}">
+              <div class="capitulo-config-h">
+                  <h4>Capítulo ${num+1}</h4>
+                  <button class="btn btn-danger btn-small" onclick="delCap(${num})">Eliminar Capítulo</button>
+              </div>
+              <div class="form-row">
+                  <div class="fg"><label>Nombre del Capítulo</label><input type="text" id="capN-${num}"></div>
+                  <div class="fg"><label>Dificultad</label><select id="capD-${num}"><option value="basico">Básico</option><option value="intermedio">Intermedio</option><option value="avanzado">Avanzado</option></select></div>
+              </div>
+              <div class="fg"><label>Descripción corta</label><input type="text" id="capDesc-${num}"></div>
+              <div class="fg"><label>URL de Imagen (Opcional)</label><input type="text" id="capImg-${num}" placeholder="Ej. https://misitio.com/imagen.jpg"></div>
+              <div class="fg"><label>Contenido del libro (texto y párrafos)</label><textarea id="capC-${num}" style="min-height:120px"></textarea></div>
+              
+              <hr style="border:0; border-top:1px solid #e0e0e0; margin:20px 0;">
+              <h5 style="color:#667eea; margin-bottom:10px; font-size:14px;">Preguntas de Evaluación (Opcional)</h5>
+              <div id="pregs-cont-${num}"></div>
+              <button type="button" class="btn btn-sec btn-small" style="margin-top:10px;" onclick="addPreg(${num})">+ Añadir Pregunta a este Capítulo</button>
+          </div>
+      `;
+      document.getElementById('caps-cont').insertAdjacentHTML('beforeend', html);
+  };
+
+  window.delCap = function(num) {
+      const el = document.getElementById('cap-'+num);
+      if(el){el.remove();capsTemp[num]=null;}
+  };
+
+  // NUEVA FUNCIÓN: Agregar formulario de pregunta dinámicamente
+  window.addPreg = function(capNum) {
+      const pNum = window.pregCount[capNum];
+      const html = `
+          <div class="pregunta-config" id="preg-${capNum}-${pNum}" style="background:#fff; padding:15px; border:1px solid #d1d5db; border-radius:8px; margin-top:15px;">
+              <div class="fg" style="margin-bottom:10px;"><label>Pregunta ${pNum+1}</label><input type="text" id="pTxt-${capNum}-${pNum}" placeholder="Escribe la pregunta aquí"></div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                  <div class="fg" style="margin-bottom:0;"><label>Opción A</label><input type="text" id="pOp0-${capNum}-${pNum}" placeholder="Respuesta A"></div>
+                  <div class="fg" style="margin-bottom:0;"><label>Opción B</label><input type="text" id="pOp1-${capNum}-${pNum}" placeholder="Respuesta B"></div>
+                  <div class="fg" style="margin-bottom:0;"><label>Opción C</label><input type="text" id="pOp2-${capNum}-${pNum}" placeholder="Respuesta C"></div>
+                  <div class="fg" style="margin-bottom:0;"><label>Opción D</label><input type="text" id="pOp3-${capNum}-${pNum}" placeholder="Respuesta D"></div>
+              </div>
+              <div class="form-row" style="margin-bottom:0; align-items:flex-end;">
+                  <div class="fg" style="margin-bottom:0;">
+                      <label style="color:#2ecc71;">Respuesta Correcta</label>
+                      <select id="pCor-${capNum}-${pNum}">
+                          <option value="0">Opción A</option>
+                          <option value="1">Opción B</option>
+                          <option value="2">Opción C</option>
+                          <option value="3">Opción D</option>
+                      </select>
+                  </div>
+                  <div style="text-align:right;">
+                      <button class="btn btn-danger btn-small" onclick="document.getElementById('preg-${capNum}-${pNum}').remove()">Eliminar Pregunta</button>
+                  </div>
+              </div>
+          </div>
+      `;
+      document.getElementById(`pregs-cont-${capNum}`).insertAdjacentHTML('beforeend', html);
+      window.pregCount[capNum]++;
+  };
+
+  window.guardarTema = async function() {
+      const nombre = document.getElementById('nTema').value.trim();
+      const subt = document.getElementById('nSubt').value.trim();
+      const icono = document.getElementById('nIcono').value.trim() || '📚';
+      
+      if(!nombre || !subt){alert('Completa nombre y subtítulo del Tema');return;}
+      
+      const nuevoTema = {
+          nombre: nombre,
+          icono: icono,
+          subt: subt,
+          asignadoA: [],
+          capitulos: []
+      };
+      
+      let capNum = 1;
+      let errorEncontrado = false;
+
+      capsTemp.forEach((cap, i) => {
+          if(!cap || errorEncontrado) return;
+          const capN = document.getElementById('capN-'+i);
+          if(!capN) return;
+          
+          const capNombre = capN.value.trim();
+          const capDif = document.getElementById('capD-'+i).value;
+          const capDesc = document.getElementById('capDesc-'+i).value.trim();
+          const capImgUrl = document.getElementById('capImg-'+i) ? document.getElementById('capImg-'+i).value.trim() : '';
+          const capCont = document.getElementById('capC-'+i).value.trim();
+          
+          if(!capNombre || !capCont) {
+              alert(`Por favor, completa el Nombre y el Contenido del Capítulo ${i+1}`);
+              errorEncontrado = true;
+              return;
+          }
+          
+          // Recopilar preguntas dinámicas
+          const preguntasGen = [];
+          let pIndex = 0;
+          while(pIndex < 50) { // Límite de 50 preguntas por capítulo por seguridad
+              let pTxtEl = document.getElementById(`pTxt-${i}-${pIndex}`);
+              if(pTxtEl) {
+                  let txt = pTxtEl.value.trim();
+                  let op0 = document.getElementById(`pOp0-${i}-${pIndex}`).value.trim() || 'Opción A';
+                  let op1 = document.getElementById(`pOp1-${i}-${pIndex}`).value.trim() || 'Opción B';
+                  let op2 = document.getElementById(`pOp2-${i}-${pIndex}`).value.trim() || 'Opción C';
+                  let op3 = document.getElementById(`pOp3-${i}-${pIndex}`).value.trim() || 'Opción D';
+                  let cor = parseInt(document.getElementById(`pCor-${i}-${pIndex}`).value);
+
+                  if(txt) {
+                      preguntasGen.push({
+                          txt: txt,
+                          ops: [op0, op1, op2, op3],
+                          cor: cor
+                      });
+                  }
+              }
+              pIndex++;
+          }
+          
+          let imgHtml = '';
+          if(capImgUrl) {
+              imgHtml = `<div style="text-align: center;"><img src="${capImgUrl}" alt="Imagen del capítulo" style="max-width: 100%; border-radius: 12px; margin: 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"></div>`;
+          }
+
+          const contenidoHTML = `
+              <div class="capitulo">
+                  <h2>${capNombre}</h2>
+                  <div class="visual-aid"><div class="icono-grande">${icono}</div><h4>${capNombre}</h4><p>${capDesc}</p></div>
+                  ${imgHtml}
+                  ${capCont.split('\n').filter(l => l.trim()).map(l => {
+                      if(l.includes('📊') || l.includes('📈') || l.includes('🎨')){ return '<div class="diagrama"><p>'+l+'</p></div>'; }
+                      return '<p>'+l+'</p>';
+                  }).join('')}
+              </div>
+          `;
+          
+          nuevoTema.capitulos.push({
+              id: capNum++, nombre: capNombre, dificultad: capDif,
+              descripcion: capDesc, contenido: contenidoHTML, preguntas: preguntasGen
+          });
+      });
+      
+      if(errorEncontrado) return;
+      if(nuevoTema.capitulos.length === 0){alert('Agrega al menos 1 capítulo válido');return;}
+      
+      try {
+          const docRef = doc(collection(db, "temas"));
+          await setDoc(docRef, nuevoTema);
+          nuevoTema.id = docRef.id;
+          temas.push(nuevoTema);
+          
+          window.actualizarAdmin();
+          alert('✓ Tema guardado en la Base de Datos. Ahora asígnalo a los usuarios.');
+          window.adminTab('asignar');
+      } catch (e) {
+          alert("Error guardando tema: " + e.message);
+      }
+  };
+
+  window.cargarAsignarView = function() {
+      let html = '';
+      temas.forEach(tema => {
+          html += `
+              <div style="background:#f9f9f9;padding:18px;border-radius:10px;margin-bottom:18px;border-left:4px solid #667eea">
+                  <h4 style="color:#333;margin-bottom:10px;font-weight:700">${tema.icono} ${tema.nombre}</h4>
+                  <p style="color:#666;font-size:12px;margin-bottom:12px">${tema.subt}</p>
+                  <p style="font-size:12px;color:#555;margin-bottom:10px;font-weight:600">Asignar a estudiantes:</p>
+                  <div class="check-group">
+          `;
+          usuarios.forEach(u => {
+              if(u.rol === "estudiante") {
+                  const asignado = tema.asignadoA && tema.asignadoA.includes(u.u);
+                  html += `
+                      <label class="check-item ${asignado ? 'checked' : ''}">
+                          <input type="checkbox" ${asignado ? 'checked' : ''} onchange="toggleAsignar('${tema.id}', '${u.u}')">
+                          ${u.nombre}
+                      </label>
+                  `;
+              }
+          });
+          html += `</div></div>`;
+      });
+      if(temas.length === 0) html = '<p style="color:#999;text-align:center;padding:40px">No hay temas cargados aún</p>';
+      document.getElementById('asignar-cont').innerHTML = html;
+  };
+
+  window.toggleAsignar = async function(temaId, usuarioU) {
+      const tema = temas.find(t => String(t.id) === String(temaId));
+      if(!tema) return;
+      if(!tema.asignadoA) tema.asignadoA = [];
+      
+      if(tema.asignadoA.includes(usuarioU)){
+          tema.asignadoA = tema.asignadoA.filter(u => u !== usuarioU);
+      } else {
+          tema.asignadoA.push(usuarioU);
+      }
+      
+      try {
+          const temaRef = doc(db, "temas", tema.id);
+          await updateDoc(temaRef, { asignadoA: tema.asignadoA });
+          window.cargarAsignarView();
+          const n = document.createElement('div'); n.className = 'notif'; n.textContent = '✓ Asignación en la nube actualizada';
+          document.body.appendChild(n); setTimeout(() => n.remove(), 2000);
+      } catch(e) { console.error(e); }
+  };
+
+  window.cargarAyudasView = function() {
+      if(ayudas.length === 0){
+          document.getElementById('ayudas-cont').innerHTML = '<p style="color:#999;text-align:center;padding:40px">No hay solicitudes de ayuda</p>';
+          return;
+      }
+      let html = '';
+      ayudas.forEach(a => {
+          const estadoColor = a.estado === 'pendiente' ? '#e74c3c' : '#2ecc71';
+          html += `
+              <div style="background:#f9f9f9;padding:16px;border-radius:10px;margin-bottom:12px;border-left:4px solid ${estadoColor}">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;gap:10px;flex-wrap:wrap">
+                      <div>
+                          <h4 style="color:#333;margin-bottom:4px;font-weight:700;font-size:14px">${a.estudiante}</h4>
+                          <p style="color:#777;font-size:11px">${a.fecha}</p>
+                      </div>
+                      <span class="badge ${a.estado === 'pendiente' ? 'b-avanzado' : 'b-basico'}" style="white-space:nowrap">${a.estado}</span>
+                  </div>
+                  <p style="color:#555;font-size:12px;margin-bottom:8px"><strong>📧 ${a.email}</strong> | <strong>Tema:</strong> ${a.tema} ${a.capitulo ? '- '+a.capitulo : ''}</p>
+                  <div style="background:white;padding:12px;border-radius:8px;margin-bottom:12px">
+                      <p style="color:#333;font-size:13px;line-height:1.6">${a.mensaje}</p>
+                  </div>
+                  ${a.estado === 'pendiente' ? `<button class="btn btn-small" onclick="resolverAyuda('${a.id}')">✓ Marcar como resuelta</button>` : ''}
+              </div>
+          `;
+      });
+      document.getElementById('ayudas-cont').innerHTML = html;
+  };
+
+  window.resolverAyuda = async function(id) {
+      const a = ayudas.find(x => String(x.id) === String(id));
+      if(a){
+          try {
+              await updateDoc(doc(db, "ayudas", a.id), { estado: "resuelta" });
+              a.estado = 'resuelta';
+              window.cargarAyudasView();
+              window.actualizarAdmin();
+          } catch(e) { console.error(e); }
+      }
+  };
+</script>
+
+</body>
+</html>
