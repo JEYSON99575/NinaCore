@@ -438,6 +438,11 @@ table tr:hover{background:#f9f9f9}
 <h3>📚 Cargar Nuevo Tema</h3>
 <p style="color:#666;margin-bottom:20px;font-size:13px">Crea un tema con capítulos, contenido visual y preguntas personalizadas para evaluar.</p>
 
+<button class="btn" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); width: 100%; margin-bottom: 25px; font-size: 16px;" onclick="cargarCursoGeminiFirebase(this)">
+  ⚡ Cargar Curso "Maestría en Gemini" Automáticamente a la Nube
+</button>
+<hr style="border:0; border-top:2px dashed #e0e0e0; margin-bottom:25px;">
+
 <div class="form-row">
 <div class="fg"><label>Nombre del Tema *</label><input type="text" id="nTema"></div>
 <div class="fg"><label>Icono</label><input type="text" id="nIcono" value="📚" maxlength="2"></div>
@@ -1258,6 +1263,83 @@ table tr:hover{background:#f9f9f9}
               window.actualizarAdmin();
           } catch(e) { console.error(e); }
       }
+  };
+
+  // NADA ROTO AQUÍ. FUNCIÓN DE INYECCIÓN DE CURSO AUTOMÁTICO A FIREBASE.
+  window.cargarCursoGeminiFirebase = async function(btn) {
+      if(!confirm("¿Deseas inyectar este curso completo en la base de datos?")) return;
+      
+      const textoOriginal = btn.innerHTML;
+      btn.innerHTML = "⏳ Subiendo a la Nube...";
+      btn.disabled = true;
+
+      // Estructura de Datos JSON exacta a tu modelo de Firestore
+      const cursoGemini = {
+          nombre: "Maestría en Gemini IA",
+          icono: "🤖",
+          subt: "Aprende a dominar a Gemini para programar, logística y automatización",
+          asignadoA: [], // Queda vacío para que lo asignes después
+          capitulos: [
+              {
+                  id: 1,
+                  nombre: "1. ¿Qué es esta Magia llamada Gemini?",
+                  dificultad: "basico",
+                  descripcion: "Introducción a la IA y el 'Prompting'.",
+                  contenido: `
+                      <div class="capitulo">
+                          <h2>1. ¿Qué es esta Magia llamada Gemini?</h2>
+                          <div class="visual-aid">
+                              <div class="icono-grande">🧠</div>
+                              <h4>La Inteligencia Artificial no es Google</h4>
+                              <p>Entiende la diferencia entre buscar enlaces y tener un asistente inteligente.</p>
+                          </div>
+                          <div style="text-align: center;">
+                              <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80" alt="IA Concepto" style="max-width: 100%; border-radius: 12px; margin: 15px 0; box-shadow: 0 5px 15px rgba(102,126,234,0.3);">
+                          </div>
+                          <p>Imagina que tienes a un asistente que ha leído todos los libros del mundo, sabe programar y organizar almacenes, pero <strong>no sabe adivinar el pensamiento</strong>. Para que te ayude, solo tienes que saber hablarle.</p>
+                          <div class="diagrama"><p>🚀 Regla de Oro: Si le pides poco, te da poco. Si le das contexto y detalles, te da oro.</p></div>
+                          <h3>La Fórmula Mágica</h3>
+                          <p>Nunca lances una pregunta al aire. Usa esta fórmula: <strong>Persona + Tarea + Detalle</strong>.</p>
+                          <ul class="lista">
+                              <li><strong>Mal:</strong> "Dime cómo usar Excel".</li>
+                              <li><strong>Bien:</strong> "Actúa como un experto en Excel, dame una fórmula de buscarV para mi inventario de almacén".</li>
+                          </ul>
+                      </div>
+                  `,
+                  preguntas: [
+                      {
+                          txt: "¿Cuál es la principal diferencia entre Gemini y un buscador como Google?",
+                          ops: ["Gemini solo busca noticias", "Gemini te da respuestas directas y crea soluciones", "No hay diferencia"],
+                          cor: 1
+                      },
+                      {
+                          txt: "Según la Fórmula Mágica, ¿cuál es la mejor instrucción?",
+                          ops: ["Ayúdame con el inventario", "Dime qué hacer hoy", "Actúa como logístico y dime cómo auditar 13 racks en 1 mes"],
+                          cor: 2
+                      }
+                  ]
+              }
+          ]
+      };
+
+      try {
+          // Tu misma lógica para subir a la colección "temas"
+          const docRef = doc(collection(db, "temas"));
+          await setDoc(docRef, cursoGemini);
+          cursoGemini.id = docRef.id;
+          temas.push(cursoGemini);
+
+          window.actualizarAdmin();
+          alert('✓ Curso inyectado exitosamente en la base de datos.');
+          
+          // Te manda directo a la pestaña de Asignar para que se lo actives a los usuarios
+          window.adminTab('asignar'); 
+      } catch(e) {
+          alert("Error inyectando a Firebase: " + e.message);
+      }
+      
+      btn.innerHTML = textoOriginal;
+      btn.disabled = false;
   };
 </script>
 
