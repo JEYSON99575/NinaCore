@@ -397,10 +397,18 @@ table tr:hover{background:#f9f9f9}
 
 <div class="container">
 <div class="stats-grid">
-<div class="stat"><div class="stat-n" id="sEst">0</div><div class="stat-l">Estudiantes</div></div>
-<div class="stat"><div class="stat-n" id="sTem">0</div><div class="stat-l">Temas</div></div>
-<div class="stat"><div class="stat-n" id="sEval">0</div><div class="stat-l">Evaluaciones Totales</div></div>
-<div class="stat"><div class="stat-n" id="sAyu">0</div><div class="stat-l">Ayudas Pendientes</div></div>
+    <div class="stat" style="cursor:pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="adminTab('usuarios')">
+        <div class="stat-n" id="sEst">0</div><div class="stat-l">Estudiantes</div>
+    </div>
+    <div class="stat" style="cursor:pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="adminTab('asignar')">
+        <div class="stat-n" id="sTem">0</div><div class="stat-l">Temas</div>
+    </div>
+    <div class="stat" style="cursor:pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="adminTab('dash')">
+        <div class="stat-n" id="sEval">0</div><div class="stat-l">Evaluaciones Totales</div>
+    </div>
+    <div class="stat" style="cursor:pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="adminTab('ayudas')">
+        <div class="stat-n" id="sAyu">0</div><div class="stat-l">Ayudas Pendientes</div>
+    </div>
 </div>
 
 <div class="admin-tabs">
@@ -441,11 +449,16 @@ table tr:hover{background:#f9f9f9}
 <div id="aCargar" class="admin-section">
 <h3>📚 Cargar Nuevo Tema</h3>
 
-<div style="background:#f0f4ff; padding:15px; border-radius:10px; margin-bottom:25px; border:2px dashed #667eea;">
-    <h4 style="color:#667eea; margin-bottom:8px;">⚡ Carga Rápida Inteligente (JSON)</h4>
-    <p style="font-size:12px; color:#555; margin-bottom:12px;">Pídele a Gemini el código JSON del curso y pégalo aquí. NinaCore lo armará y subirá a la base de datos automáticamente.</p>
-    <textarea id="jsonUpload" style="width:100%; height:120px; padding:10px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:12px;" placeholder='{&#10;  "nombre": "Título del Tema",&#10;  "icono": "📚",&#10;  "subt": "Descripción corta",&#10;  "capitulos": [...]&#10;}'></textarea>
-    <button class="btn" style="margin-top:12px; width:100%; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); font-size: 15px;" onclick="cargarDesdeJSON()">🚀 Inyectar Curso en la Nube</button>
+<div style="background:#f0f4ff; padding:20px; border-radius:10px; margin-bottom:25px; border:2px dashed #667eea; text-align:center;">
+    <div style="font-size: 40px; margin-bottom: 10px;">📁</div>
+    <h4 style="color:#667eea; margin-bottom:8px;">⚡ Carga por Archivo JSON</h4>
+    <p style="font-size:13px; color:#555; margin-bottom:15px;">Selecciona el archivo <b>.json</b> de tu computadora para inyectar el curso completo a la nube.</p>
+    
+    <input type="file" id="fileJsonUpload" accept=".json" style="display:none" onchange="leerArchivoJSON(event)">
+    
+    <label for="fileJsonUpload" class="btn" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); cursor:pointer; display:inline-block; padding:12px 30px; font-size: 15px;">
+        Seleccionar Archivo JSON y Subir 🚀
+    </label>
 </div>
 
 <p style="color:#666;margin-bottom:20px;font-size:13px">O si prefieres, crea el tema de forma manual llenando el formulario:</p>
@@ -928,7 +941,7 @@ table tr:hover{background:#f9f9f9}
       window.cargarUsersView();
       window.cargarAsignarView();
       window.cargarAyudasView();
-      window.cargarEvalsDashboard(); // NUEVA FUNCION DASHBOARD
+      window.cargarEvalsDashboard();
   };
 
   window.adminTab = function(tab) {
@@ -1015,7 +1028,6 @@ table tr:hover{background:#f9f9f9}
       document.getElementById('users-cont').innerHTML = html;
   };
 
-  // NUEVA FUNCIÓN PARA VER LAS CALIFICACIONES EN EL PERFIL
   window.verDetalleEvals = function(uid) {
       const el = document.getElementById('evals-'+uid);
       if(el.style.display === 'block'){ 
@@ -1043,7 +1055,6 @@ table tr:hover{background:#f9f9f9}
       el.style.display = 'block';
   };
 
-  // NUEVA FUNCIÓN PARA EL DASHBOARD PRINCIPAL (MÉTRICAS REALES)
   window.cargarEvalsDashboard = function() {
       let todasLasEvals = [];
       usuarios.forEach(u => {
@@ -1052,7 +1063,6 @@ table tr:hover{background:#f9f9f9}
           }
       });
       
-      // Invertimos para ver las más recientes primero (básico)
       todasLasEvals.reverse();
       
       let evalsHtml = `
@@ -1092,7 +1102,7 @@ table tr:hover{background:#f9f9f9}
       document.getElementById('nTema').value = '';
       document.getElementById('nSubt').value = '';
       document.getElementById('nIcono').value = '📚';
-      document.getElementById('jsonUpload').value = '';
+      if(document.getElementById('fileJsonUpload')) document.getElementById('fileJsonUpload').value = '';
       window.addCap();
   };
 
@@ -1160,47 +1170,74 @@ table tr:hover{background:#f9f9f9}
       window.pregCount[capNum]++;
   };
 
-  // NUEVA FUNCIÓN: INYECCIÓN DINÁMICA DE CUALQUIER JSON
-  window.cargarDesdeJSON = async function() {
-      const rawJson = document.getElementById('jsonUpload').value.trim();
-      if(!rawJson) {
-          alert('Por favor, pega el código JSON que te generó Gemini en la caja de texto.');
+  // LECTURA Y SUBIDA DIRECTA DE ARCHIVO JSON
+  window.leerArchivoJSON = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.type !== "application/json" && !file.name.endsWith(".json")) {
+          alert("Por favor, selecciona un archivo con formato .json");
+          event.target.value = ''; 
           return;
       }
 
-      let cursoNuevo;
-      try {
-          cursoNuevo = JSON.parse(rawJson);
-      } catch (e) {
-          alert('Error: El formato JSON no es válido. Asegúrate de copiarlo completo.\nDetalle: ' + e.message);
-          return;
-      }
-
-      // Validamos estructura básica
-      if(!cursoNuevo.nombre || !cursoNuevo.capitulos) {
-          alert('El JSON es válido pero le faltan campos obligatorios como "nombre" o "capitulos".');
-          return;
-      }
-
-      if(!confirm(`¿Estás seguro de inyectar el curso "${cursoNuevo.nombre}" en la base de datos?`)) return;
-
-      // Nos aseguramos de que tenga la propiedad asignadoA
-      if(!cursoNuevo.asignadoA) cursoNuevo.asignadoA = [];
-
-      try {
-          const docRef = doc(collection(db, "temas"));
-          await setDoc(docRef, cursoNuevo);
-          cursoNuevo.id = docRef.id;
-          temas.push(cursoNuevo);
-
-          window.actualizarAdmin();
-          alert('¡Éxito! Curso inyectado en Firebase correctamente.');
+      const reader = new FileReader();
+      
+      reader.onload = async function(e) {
+          const rawJson = e.target.result;
+          let cursoNuevo;
           
-          document.getElementById('jsonUpload').value = '';
-          window.adminTab('asignar'); // Te lleva a asignarlo
-      } catch(e) {
-          alert("Error inyectando a Firebase: " + e.message);
-      }
+          try {
+              cursoNuevo = JSON.parse(rawJson);
+          } catch (error) {
+              alert('Error: El archivo no tiene un formato JSON válido.\nDetalle: ' + error.message);
+              event.target.value = ''; 
+              return;
+          }
+
+          if(!cursoNuevo.nombre || !cursoNuevo.capitulos) {
+              alert('El archivo se leyó bien, pero le faltan campos obligatorios como "nombre" o "capitulos".');
+              event.target.value = ''; 
+              return;
+          }
+
+          if(!confirm(`¿Estás seguro de inyectar el curso "${cursoNuevo.nombre}" en la base de datos?`)) {
+              event.target.value = ''; 
+              return;
+          }
+
+          if(!cursoNuevo.asignadoA) cursoNuevo.asignadoA = [];
+
+          try {
+              const labelBtn = document.querySelector('label[for="fileJsonUpload"]');
+              const originalText = labelBtn.innerHTML;
+              labelBtn.innerHTML = "⏳ Subiendo...";
+              labelBtn.style.pointerEvents = "none";
+
+              const docRef = doc(collection(db, "temas"));
+              await setDoc(docRef, cursoNuevo);
+              cursoNuevo.id = docRef.id;
+              temas.push(cursoNuevo);
+
+              window.actualizarAdmin();
+              alert('¡Éxito! Curso inyectado en Firebase correctamente.');
+              
+              labelBtn.innerHTML = originalText;
+              labelBtn.style.pointerEvents = "auto";
+              event.target.value = ''; 
+              window.adminTab('asignar'); 
+
+          } catch(error) {
+              alert("Error inyectando a Firebase: " + error.message);
+              event.target.value = ''; 
+          }
+      };
+
+      reader.onerror = function() {
+          alert("Hubo un error leyendo el archivo.");
+      };
+
+      reader.readAsText(file);
   };
 
   window.guardarTema = async function() {
